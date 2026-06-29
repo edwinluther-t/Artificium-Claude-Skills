@@ -69,6 +69,17 @@ python build-dist.py
 
 Commit both your `skills/` change and the regenerated `skills-dist/` output.
 
+## Git hooks
+
+This repo ships a `commit-msg` hook that rejects AI co-author attribution in
+commit messages. Enable it once after cloning:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Keep commit messages clean — no `Co-Authored-By` or "Generated with" lines.
+
 ## Quality checklist
 
 Before you open a PR, run your skill against this:

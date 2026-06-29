@@ -1,0 +1,8 @@
+#!/bin/sh
+# Reject any commit message containing AI attribution.
+if grep -qiE "co-authored-by:.*(claude|anthropic)|generated with claude|🤖 generated|noreply@anthropic" "$1"; then
+  echo "commit-msg hook: AI attribution detected in commit message. Removed by policy." >&2
+  echo "Strip any 'Co-Authored-By: Claude', 'Generated with Claude', or Anthropic noreply lines and retry." >&2
+  exit 1
+fi
+exit 0
