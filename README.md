@@ -32,9 +32,18 @@ Created and maintained by **[Edwin Luther](https://github.com/edwinluther-t)**. 
 
 ## Quick start (30 seconds)
 
+Clone, then copy the skills into your Claude Code skills directory.
+
+**macOS / Linux:**
 ```bash
 git clone https://github.com/edwinluther-t/Artificium-Claude-Skills.git
 cp -r Artificium-Claude-Skills/skills-dist/* ~/.claude/skills/
+```
+
+**Windows (PowerShell):**
+```powershell
+git clone https://github.com/edwinluther-t/Artificium-Claude-Skills.git
+Copy-Item -Recurse Artificium-Claude-Skills\skills-dist\* "$env:USERPROFILE\.claude\skills\"
 ```
 
 Open Claude Code and type `/` — all 229 skills are live. That's it.
@@ -43,21 +52,30 @@ Open Claude Code and type `/` — all 229 skills are live. That's it.
 
 ## Install
 
-Each skill lives in `skills-dist/<skill-name>/SKILL.md`. Copy the contents of `skills-dist/` into your Claude Code skills directory:
+Each skill lives in `skills-dist/<skill-name>/SKILL.md`. Copy the contents of `skills-dist/` into your Claude Code skills directory.
 
-**Global (available in every project):**
+### Global (available in every project)
+
+**macOS / Linux:**
 ```bash
 cp -r skills-dist/* ~/.claude/skills/
 ```
 
-**Windows:**
-```bash
-cp -r skills-dist/* "C:/Users/<you>/.claude/skills/"
+**Windows (PowerShell):**
+```powershell
+Copy-Item -Recurse skills-dist\* "$env:USERPROFILE\.claude\skills\"
 ```
 
-**Project-only (current project):**
+### Project-only (current project)
+
+**macOS / Linux:**
 ```bash
 cp -r skills-dist/* .claude/skills/
+```
+
+**Windows (PowerShell):**
+```powershell
+Copy-Item -Recurse skills-dist\* .claude\skills\
 ```
 
 Once copied, skills are available immediately as `/skill-name` in Claude Code — no restart needed.

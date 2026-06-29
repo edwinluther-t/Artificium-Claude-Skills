@@ -6,7 +6,8 @@ CLAUDE.md
 .claude/settings.json
 .claude/settings.local.json
 
-# Throwaway root copy of the social-preview image (canonical copy lives in assets/social-preview/)
+# Generated assets (social preview, banners) — not part of the distributable
+assets/
 social-preview.png
 
 # OS / editor cruft
