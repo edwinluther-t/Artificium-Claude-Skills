@@ -1,0 +1,17 @@
+# Internal working notes — not for publication
+audit/
+CLAUDE.md
+
+# Local Claude Code config (contains machine-specific paths)
+.claude/settings.json
+.claude/settings.local.json
+
+# Throwaway root copy of the social-preview image (canonical copy lives in assets/social-preview/)
+social-preview.png
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.local
+__pycache__/
+*.pyc

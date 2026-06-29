@@ -1,0 +1,42 @@
+---
+name: continuous-agent-loop
+description: Patterns for continuous autonomous agent loops with quality gates, evals, and recovery controls. Use when selecting between sequential, parallel, RFC-decomposed, or CI-gated loop strategies for autonomous agent workflows.
+---
+
+# Continuous Agent Loop
+
+## Loop Selection Flow
+
+```text
+Start
+  |
+  +-- Need strict CI/PR control? -- yes --> continuous-pr
+  |
+  +-- Need RFC decomposition? -- yes --> rfc-dag
+  |
+  +-- Need exploratory parallel generation? -- yes --> infinite
+  |
+  +-- default --> sequential
+```
+
+## Combined Pattern
+
+Recommended production stack:
+1. RFC decomposition
+2. quality gates
+3. eval loop (`eval-harness`)
+4. session persistence
+
+## Failure Modes
+
+- loop churn without measurable progress
+- repeated retries with same root cause
+- merge queue stalls
+- cost drift from unbounded escalation
+
+## Recovery
+
+- freeze loop
+- run harness audit
+- reduce scope to failing unit
+- replay with explicit acceptance criteria

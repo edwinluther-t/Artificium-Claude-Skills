@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --bg: #0a0a0b;
+    --bg2: #111114;
+    --fg: #ededef;
+    --muted: #8b8b94;
+    --accent: #f5a623;
+    --line: rgba(255,255,255,0.06);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1280px; height: 640px; }
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(ellipse at 78% 25%, rgba(245,166,35,0.10), transparent 55%),
+                linear-gradient(135deg, var(--bg2), var(--bg));
+    color: var(--fg);
+    position: relative;
+    overflow: hidden;
+  }
+  /* subtle grid */
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at 30% 50%, black 40%, transparent 85%);
+  }
+  .wrap {
+    position: relative;
+    height: 100%;
+    padding: 80px 88px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .top { display: flex; align-items: center; gap: 16px; }
+  .dot {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 22px 4px rgba(245,166,35,0.55);
+  }
+  .repo {
+    font-family: "SF Mono", "Cascadia Code", "Consolas", monospace;
+    font-size: 26px;
+    letter-spacing: 0.5px;
+    color: var(--fg);
+  }
+  .mid { margin-top: -20px; }
+  h1 {
+    font-size: 92px;
+    line-height: 1.02;
+    font-weight: 800;
+    letter-spacing: -2.5px;
+  }
+  h1 .num { color: var(--accent); }
+  .sub {
+    margin-top: 22px;
+    font-size: 30px;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: -0.2px;
+  }
+  .bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cats {
+    font-family: "SF Mono", "Cascadia Code", "Consolas", monospace;
+    font-size: 21px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+  }
+  .cats b { color: var(--fg); font-weight: 500; }
+  .author {
+    font-size: 20px;
+    color: var(--muted);
+  }
+  .author b { color: var(--fg); font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="wrap">
+    <div class="top">
+      <div class="dot"></div>
+      <div class="repo">Artificium-Claude-Skills</div>
+    </div>
+    <div class="mid">
+      <h1><span class="num">229</span> curated<br>Claude&nbsp;Code skills.</h1>
+      <div class="sub">Purpose-built for real workflows — install and use immediately.</div>
+    </div>
+    <div class="bottom">
+      <div class="cats"><b>engineering</b> · <b>design</b> · <b>agents</b> · <b>research</b> · <b>content</b> · <b>ops</b></div>
+      <div class="author">by <b>Edwin Luther</b></div>
+    </div>
+  </div>
+</body>
+</html>
