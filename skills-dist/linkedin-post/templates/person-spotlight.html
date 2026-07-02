@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ARCHETYPE: person-spotlight
+  WHEN TO USE: announcing a PERSON — a senior appointment / new hire ("X joins us
+    as ROLE"), a promotion, an award, or a featured speaker. A filled-role
+    spotlight (the role is TAKEN), not an open vacancy.
+  ANATOMY: LEFT column — eyebrow → huge multi-line gradient headline → sub-headline
+    (name joins ORG as ROLE) → a vertical list of N bio icon-rows (round outline
+    icon badge + 2-4 line text with accent keywords). RIGHT — a hero PORTRAIT image
+    slot with a CSS chip-glow + Lucide icon ring overlay and a name/title plate.
+    BOTTOM (full-width bands) — a quote band (big quote mark + statement + logo) and
+    a CTA / engagement band (follow prompt + Like/Comment/Share/Follow row).
+  DIFFERS FROM: hiring-banner (an OPEN role — skills columns + art slot, landscape,
+    NO portrait/bio/quote/engagement). event-banner (an EVENT). lead-magnet-promo
+    (a DOWNLOAD). This is the only archetype built around a PERSON.
+  DATA MODES (on <body>):
+    data-bio="3|4"        bio icon-row count.
+    data-quote="on|off"   the quote value-prop band.
+    data-engage="on|off"  the Like/Comment/Share/Follow band.
+    data-hero="image|css" portrait slot ON (default) vs CSS placeholder.
+  DEFAULT THEME: near-black with blue→violet gradient headline, Space Grotesk 700 /
+    Inter. SQUARE 1080×1080.
+  RENDER: chrome --headless=new --window-size=1080,1080 ... person-spotlight.html
+-->
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+:root{
+  /* ---- palette (sampled from a dark AI-appointment poster) ---- */
+  --bg:#080a14; --panel:#0d1020; --line:#1e2440; --ink:#ffffff; --muted:#9aa3c4;
+  --g1:#4d7cff; --g2:#9a6cff;        /* gradient headline + name plate */
+  --accent:#5b8cff;                  /* keyword highlight */
+  --badge-ring:#2f3a66; --badge-ink:#bcd0ff;
+  --glow:#3a6cff;
+  --w:1080px; --h:1080px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:var(--w);height:var(--h);font-family:Inter,sans-serif;
+  background:radial-gradient(120% 90% at 75% 8%,#11162e,var(--bg) 60%);
+  color:var(--ink);overflow:hidden}
+.wrap{height:100%;display:flex;flex-direction:column;padding:40px 40px 30px}
+
+/* ===== TOP region: left text | right hero ===== */
+.top{flex:1;display:grid;grid-template-columns:1.08fr .92fr;column-gap:30px;
+  min-height:0}
+
+/* ---- LEFT ---- */
+.left{display:flex;flex-direction:column;min-height:0}
+.cr{width:30px;height:30px;border-radius:7px;background:#fff;color:#080a14;
+  font-family:Space Grotesk;font-weight:700;font-size:15px;display:grid;
+  place-items:center;margin-bottom:14px}
+.eyebrow{font-weight:700;font-size:20px;letter-spacing:2px;color:#dfe5ff;
+  text-transform:uppercase}
+.head{font-family:Space Grotesk;font-weight:700;font-size:74px;line-height:.94;
+  letter-spacing:-2px;margin:8px 0 4px;
+  background:linear-gradient(100deg,var(--g1),var(--g2));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-family:Space Grotesk;font-weight:600;font-size:26px;line-height:1.18;
+  color:#eef1ff;margin-top:8px}
+.sub b{color:var(--accent);font-weight:700}
+.bio{flex:1;display:flex;flex-direction:column;justify-content:center;
+  gap:0;margin-top:18px;min-height:0}
+.brow{display:flex;gap:18px;align-items:flex-start;padding:14px 0;
+  border-bottom:1px solid var(--line)}
+.brow:last-child{border-bottom:0}
+.bi{flex:0 0 auto;width:62px;height:62px;border-radius:50%;
+  border:2px solid var(--badge-ring);display:grid;place-items:center;
+  background:rgba(40,55,110,.25)}
+.bi .iconify{font-size:30px;color:var(--badge-ink)}
+.bt{font-size:20px;line-height:1.3;color:#d7ddf2}
+.bt b{color:var(--accent);font-weight:700}
+
+/* ---- RIGHT hero ---- */
+.hero{position:relative;border-radius:18px;overflow:hidden;background:#0a0e1c}
+.hero .photo{position:absolute;inset:0;
+  background:linear-gradient(160deg,#26305a,#0c1024);
+  background-size:cover;background-position:center top}
+body[data-hero="css"] .hero .photo::after{content:"PORTRAIT SLOT";
+  position:absolute;inset:0;display:grid;place-items:center;color:#5b6aa0;
+  font-weight:600;font-size:18px;letter-spacing:1px}
+/* circuit chip-glow ring (CSS approximation of the source's 3D overlay) */
+.ring{position:absolute;top:34px;right:30px;width:150px;height:150px;z-index:2}
+.ring .core{position:absolute;top:50%;left:50%;width:62px;height:62px;
+  transform:translate(-50%,-50%);border-radius:14px;background:#0e1430;
+  border:1px solid #3a55c0;display:grid;place-items:center;
+  box-shadow:0 0 30px 6px rgba(58,108,255,.55),inset 0 0 14px rgba(90,140,255,.4)}
+.ring .core .iconify{font-size:30px;color:#aac4ff}
+.ring .orb{position:absolute;width:36px;height:36px;border-radius:50%;
+  background:rgba(12,18,42,.85);border:1px solid #2f3a66;display:grid;
+  place-items:center;box-shadow:0 0 14px rgba(58,108,255,.4)}
+.ring .orb .iconify{font-size:18px;color:#9ec0ff}
+.ring .o1{top:-6px;left:46px}.ring .o2{top:46px;right:-8px}
+.ring .o3{bottom:-4px;left:40px}.ring .o4{top:50px;left:-10px}
+/* name plate */
+.plate{position:absolute;left:18px;right:18px;bottom:18px;z-index:3;
+  background:rgba(8,11,22,.62);border:1px solid #2c3a6e;
+  border-radius:14px;padding:18px 20px;text-align:center;
+  backdrop-filter:blur(3px)}
+.plate .nm{font-family:Space Grotesk;font-weight:700;font-size:34px;
+  letter-spacing:-.5px;line-height:1;
+  background:linear-gradient(100deg,var(--g1),var(--g2));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.plate .rl{font-size:19px;color:#dfe5ff;margin-top:8px;line-height:1.25}
+
+/* ===== BOTTOM bands ===== */
+.band{margin-top:14px;border:1px solid var(--line);border-radius:16px;
+  background:rgba(13,16,32,.7);display:flex;align-items:center;gap:20px;
+  padding:18px 24px}
+.quote .qm{font-family:Space Grotesk;font-weight:700;font-size:62px;
+  color:var(--g2);line-height:.7;flex:0 0 auto}
+.quote .qt{flex:1;font-size:21px;line-height:1.35;color:#e7eaf7}
+.quote .qt b{color:var(--accent);font-weight:700}
+.quote .logo{flex:0 0 auto;display:flex;align-items:center;gap:10px;
+  padding-left:22px;border-left:1px solid var(--line);
+  font-family:Space Grotesk;font-weight:700;font-size:26px;color:#fff}
+.quote .logo .iconify{font-size:30px;color:#fff}
+body[data-quote="off"] .quote{display:none}
+
+.engage .ei{flex:0 0 auto;width:56px;height:56px;border-radius:50%;
+  border:2px solid var(--badge-ring);display:grid;place-items:center;
+  background:rgba(40,55,110,.25)}
+.engage .ei .iconify{font-size:26px;color:var(--badge-ink)}
+.engage .et{flex:1;font-size:20px;line-height:1.3;color:#d7ddf2}
+.engage .et b{color:var(--accent);font-weight:700}
+.engage .acts{flex:0 0 auto;display:flex;gap:20px}
+.engage .act{display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:#aab2d4;font-size:13px;font-weight:500}
+.engage .act .iconify{font-size:24px}
+body[data-engage="off"] .engage{display:none}
+
+/* bio-count knob */
+body[data-bio="3"] .brow:nth-child(n+4){display:none}
+
+.foot{display:flex;justify-content:space-between;font-size:14px;font-weight:600;
+  color:rgba(255,255,255,.45);margin-top:12px;padding:0 4px}
+</style>
+</head>
+<body data-bio="4" data-quote="on" data-engage="on" data-hero="image">
+  <div class="wrap">
+    <!-- TOP -->
+    <div class="top">
+      <!-- LEFT -->
+      <div class="left">
+        <div class="cr">in</div>
+        <div class="eyebrow">A short eyebrow line</div>
+        <div class="head">HEADLINE<br>GOES HERE</div>
+        <div class="sub">Person Name joins Organization<br>as its <b>Role Title</b>.</div>
+
+        <div class="bio">
+          <div class="brow">
+            <div class="bi"><span class="iconify" data-icon="lucide:cpu"></span></div>
+            <div class="bt">One-line credential or focus area, two lines max.</div>
+          </div>
+          <div class="brow">
+            <div class="bi"><span class="iconify" data-icon="lucide:users"></span></div>
+            <div class="bt">Background point with a <b>highlighted org</b> and detail.</div>
+          </div>
+          <div class="brow">
+            <div class="bi"><span class="iconify" data-icon="lucide:contact"></span></div>
+            <div class="bt">Scope of the role — what the person will lead or own.</div>
+          </div>
+          <div class="brow">
+            <div class="bi"><span class="iconify" data-icon="lucide:id-card"></span></div>
+            <div class="bt">Reporting line or one more relevant fact.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT hero -->
+      <div class="hero">
+        <div class="photo"></div>
+        <div class="ring">
+          <div class="orb o1"><span class="iconify" data-icon="lucide:landmark"></span></div>
+          <div class="orb o2"><span class="iconify" data-icon="lucide:bar-chart-3"></span></div>
+          <div class="orb o3"><span class="iconify" data-icon="lucide:shield"></span></div>
+          <div class="orb o4"><span class="iconify" data-icon="lucide:settings"></span></div>
+          <div class="core"><span class="iconify" data-icon="lucide:cpu"></span></div>
+        </div>
+        <div class="plate">
+          <div class="nm">PERSON NAME</div>
+          <div class="rl">Role Title<br>Organization</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUOTE band -->
+    <div class="band quote">
+      <span class="qm">&ldquo;</span>
+      <div class="qt">A one-line value statement with <b>accent</b> keywords and a
+        <b>forward-looking</b> close.</div>
+      <div class="logo"><span class="iconify" data-icon="lucide:hexagon"></span>BRAND</div>
+    </div>
+
+    <!-- ENGAGE band -->
+    <div class="band engage">
+      <div class="ei"><span class="iconify" data-icon="lucide:rocket"></span></div>
+      <div class="et">Stay informed — follow <b>Your Handle</b> for more updates.</div>
+      <div class="acts">
+        <div class="act"><span class="iconify" data-icon="lucide:thumbs-up"></span>Like</div>
+        <div class="act"><span class="iconify" data-icon="lucide:message-circle"></span>Comment</div>
+        <div class="act"><span class="iconify" data-icon="lucide:send"></span>Share</div>
+        <div class="act"><span class="iconify" data-icon="lucide:user-plus"></span>Follow</div>
+      </div>
+    </div>
+
+    <div class="foot"><span>The Artificium</span><span>@edwinluther-t</span></div>
+  </div>
+</body>
+</html>

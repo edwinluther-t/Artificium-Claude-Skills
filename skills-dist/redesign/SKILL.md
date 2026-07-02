@@ -173,6 +173,11 @@ When upgrading a project, pull from these high-impact techniques to replace gene
 - **Grain and noise overlays.** A fixed, pointer-events-none overlay with subtle noise to break digital flatness.
 - **Colored, tinted shadows.** Shadows that carry the hue of the background rather than using generic black.
 
+### Data-viz & composition Upgrades
+- **Native CSS/SVG charts over image charts.** Replace a screenshotted/`<img>` chart with a real DOM one — a `conic-gradient` pie, a flex'd bar/spark row, a conic-ring gauge — colored from theme tokens so it rethemes with the app and stays crisp at any scale. Reach for a lib (Recharts) only when the DOM genuinely can't express it.
+- **Block composition (hybrid).** Lift a self-contained block from a stronger layout into a flat section — a stat-hero numeral, a proof-stat strip, an icon-list rail, a CTA band. Keep ONE base owning the canvas + token theme + shell; graft one or two blocks and restyle to the theme. Don't fuse two palettes/shells into one screen.
+- **Verified icon set, matched to the medium.** Swap ad-hoc/emoji glyphs for one real set as inline SVG (default lucide; hand-drawn → `streamline-freehand`). When naming an Iconify icon by string, confirm it resolves (`curl -s "https://api.iconify.design/lucide.json?icons=a,b"` → `not_found: []`) — a wrong name is a silent blank gap.
+
 ## Fix Priority
 
 Apply changes in this order for maximum visual impact with minimum risk:

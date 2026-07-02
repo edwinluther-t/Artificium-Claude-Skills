@@ -89,12 +89,36 @@ Every panel should answer a real question. If it does not, remove it.
 - upstream health
 - active connections
 
+## Layout & Color (readability of the board itself)
+
+A dashboard is regions, not a pile of panels. Apply the same layout/color
+discipline used for any UI surface:
+
+- **Region grouping = the top-to-bottom reading order operators actually use:**
+  a header row (title + the key SLO/status at a glance), then rows grouped by
+  concern (traffic → latency → errors → saturation), most-important row first.
+  Treat each row like a section band; don't scatter related panels.
+- **One coherent palette, semantic color only.** Reserve hue for meaning:
+  green/amber/red for status and thresholds, a single neutral accent for normal
+  series. Don't color series decoratively — it reads as noise. Keep text/line
+  contrast ≥ 4.5:1 on the board's background; on dark themes lighten muted labels.
+- **Consistent color mapping across panels:** the same service/series is the same
+  color everywhere on the board, so the eye tracks it between panels.
+- **Chart type by question, not by variety:** time-series for trends, stat/gauge
+  for a single current number vs threshold, bar for ranked comparison, heatmap for
+  distribution. Pick the sparsest viz that answers the operator's question.
+- **Density:** left-align labels, right-align numbers, put units on every panel,
+  and cut any panel that doesn't change a decision (the "no vanity panels" rule).
+
 ## Quality Checklist
 
 - [ ] valid dashboard JSON
 - [ ] clear section grouping
 - [ ] titles and units are present
 - [ ] thresholds/status colors are meaningful
+- [ ] same series = same color across all panels
+- [ ] one coherent palette; hue reserved for status/meaning, not decoration
+- [ ] label/number contrast is legible on the board theme (≥ 4.5:1)
 - [ ] variables exist for common filters
 - [ ] default time range and refresh are sensible
 - [ ] no vanity panels with no operator value

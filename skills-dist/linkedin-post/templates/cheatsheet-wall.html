@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!--
+  ARCHETYPE: cheatsheet-wall
+  WHEN TO USE: a dense WHOLE-TOPIC reference POSTER built from many HETEROGENEOUS
+  panels of unequal size and content type (code blocks, a mini flow diagram, a
+  file-tree, a layered stack/funnel, compare columns, a command list) tiled into a
+  masonry wall, under a big two-tone title, over a footer CTA band. The "everything
+  about X on one savable image" format.
+  DIFFERS FROM cheatsheet-grid: that is a UNIFORM 2xN grid of EQUAL icon+code+desc
+  tiles (one shape). This is a MASONRY of MIXED panels of different spans and inner
+  content. DIFFERS FROM whiteboard-sketch: that is hand-drawn marker medium; this is
+  a clean flat poster. DIFFERS FROM architecture-map: that is ONE connected diagram;
+  this is many independent reference panels side by side.
+  DATA-* KNOBS (on <body>):
+    data-cta  on|off   show/hide the bottom purple CTA band   (default on)
+  Each panel is an independent .panel block in the .wall masonry — keep/drop/reorder
+  to fit content; set its column span with the .span2 class (full width).
+  DEFAULT THEME: clean white poster, red/black two-tone title, blue panel headers,
+  purple CTA band.
+  RENDER: chrome --headless=new --force-device-scale-factor=2 --window-size=1080,1580 ...
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+  :root{
+    /* ---- palette (sampled from a clean white multi-panel "cheatsheet" poster) ---- */
+    --bg:#ffffff; --panel:#eef4fe; --panelline:#d4e2fb; --ink:#10131c; --muted:#41485c;
+    --head:#3567e6;            /* blue panel-header bar */
+    --red:#e8231f;            /* two-tone title accent + 'vs' glyph */
+    --cta:#3b1d72;            /* purple footer band */
+    --ctahl:#ffd33a;          /* yellow word in CTA */
+    --code:#0e1830; --codeink:#cfe0ff;  /* code block */
+    /* per-funnel-band tints */
+    --f1:#f2c33d; --f2:#ef7da0; --f3:#7db4ef;
+    --w:1080px; --h:1580px;
+  }
+  *{margin:0;box-sizing:border-box}
+  html,body{width:var(--w);height:var(--h)}
+  body{background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;overflow:hidden}
+  .wrap{height:100%;display:flex;flex-direction:column;padding:44px 46px 0}
+
+  /* ---- title ---- */
+  .title{font-family:"Archivo",sans-serif;font-weight:900;font-size:84px;line-height:.92;
+    letter-spacing:-.02em;text-align:center;text-transform:uppercase}
+  .title .a{color:var(--red)} .title .b{color:var(--ink)}
+  .logo{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px 0 22px}
+  .logo .lm{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
+    background:var(--cta);color:#fff;font-size:18px}
+  .logo .ln{font-family:"Archivo",sans-serif;font-weight:800;font-size:20px;letter-spacing:.06em;color:var(--cta)}
+
+  /* ---- masonry wall ---- */
+  .wall{flex:1;column-count:2;column-gap:20px}
+  .panel{break-inside:avoid;background:var(--panel);border:1px solid var(--panelline);
+    border-radius:14px;overflow:hidden;margin-bottom:20px}
+  .span2{column-span:all}                 /* full-width panel */
+  .ph{background:var(--head);color:#fff;font-family:"Archivo",sans-serif;font-weight:800;
+    font-size:21px;letter-spacing:.02em;text-transform:uppercase;text-align:center;padding:13px 16px}
+  .pb{padding:16px 18px}
+  .pb p{font-size:15px;line-height:1.4;color:var(--muted);margin-bottom:8px}
+  .pb p b{color:var(--ink)}
+
+  /* code block */
+  pre{background:var(--code);color:var(--codeink);font-family:"JetBrains Mono",monospace;
+    font-size:13.5px;line-height:1.5;border-radius:9px;padding:12px 14px;margin:8px 0;white-space:pre-wrap;word-break:break-word}
+  pre .c{color:#6f86b8}                    /* comment / dim */
+  pre .k{color:#7ee0b8}                    /* keyword/accent */
+
+  /* bullet list */
+  ul{list-style:none}
+  ul li{position:relative;padding-left:20px;font-size:15px;line-height:1.4;color:var(--muted);margin-bottom:9px}
+  ul li::before{content:"";position:absolute;left:4px;top:8px;width:7px;height:7px;border-radius:50%;background:var(--head)}
+  ul li b{color:var(--ink)}
+  ul li code{font-family:"JetBrains Mono",monospace;color:var(--head);font-weight:600;font-size:14px}
+
+  /* ---- mini flow-diagram panel (3 sub-columns of stacked nodes + arrows) ---- */
+  .flows{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .flowcol .ft{font-family:"Archivo",sans-serif;font-weight:800;font-size:13px;text-transform:uppercase;
+    text-align:center;color:var(--ink);line-height:1.1;margin-bottom:8px;min-height:30px}
+  .chain{display:flex;flex-direction:column;align-items:center;gap:0}
+  .nd{background:#fff;border:1.5px solid var(--panelline);border-radius:8px;font-size:12.5px;font-weight:600;
+    color:var(--ink);padding:7px 4px;text-align:center;width:100%}
+  .ar{color:var(--muted);font-size:13px;line-height:1;padding:3px 0}
+  .pair{display:flex;gap:6px;width:100%}
+  .pair .nd{flex:1}
+  .flownote{font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:8px;padding-left:14px;position:relative}
+  .flownote::before{content:"";position:absolute;left:2px;top:6px;width:5px;height:5px;border-radius:50%;background:var(--head)}
+
+  /* ---- file-tree panel ---- */
+  .tree{font-family:"JetBrains Mono",monospace;font-size:13px;line-height:1.65;color:var(--ink);white-space:pre}
+  .tree .d{color:var(--head);font-weight:600}
+  .tree .c{color:var(--muted)}
+
+  /* ---- funnel / memory-stack panel (CSS approximation of the 3D funnel) ---- */
+  .funnel{display:flex;flex-direction:column;align-items:center;gap:9px;padding:4px 0}
+  .fband{width:100%;border-radius:9px;color:#1d2230;font-weight:700;font-size:15px;text-align:center;
+    padding:18px 10px;box-shadow:inset 0 -6px 0 #00000012}
+  .fband small{display:block;font-weight:500;font-size:12px;color:#2b3142;opacity:.8;margin-top:2px}
+  .fband.l1{background:var(--f1);width:100%}
+  .fband.l2{background:var(--f2);width:82%}
+  .fband.l3{background:var(--f3);width:64%}
+
+  /* ---- compare-columns panel (3 mini stacks with vs glyphs) ---- */
+  .cmp{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:0 6px;align-items:start}
+  .cmpcol h4{font-family:"Archivo",sans-serif;font-weight:800;font-size:14px;text-transform:uppercase;
+    text-align:center;color:var(--ink);margin-bottom:8px}
+  .cmpcol ul li{font-size:12.5px;padding-left:15px;margin-bottom:7px}
+  .cmpcol ul li::before{width:5px;height:5px;left:3px;top:7px}
+  .vs{align-self:center;color:var(--red);font-weight:900;font-size:17px;padding-top:24px}
+  .vs .iconify{font-size:18px}
+
+  /* ---- footer CTA band ---- */
+  .cta{background:var(--cta);color:#fff;text-align:center;font-family:"Archivo",sans-serif;font-weight:800;
+    font-size:24px;letter-spacing:.01em;padding:22px 20px;margin:6px -46px 0;}
+  .cta .hl{color:var(--ctahl)}
+  body[data-cta="off"] .cta{display:none}
+  .foot{display:flex;justify-content:space-between;align-items:center;color:var(--muted);
+    font-size:14px;padding:14px 0 16px}
+  .foot b{color:var(--ink)}
+</style>
+</head>
+<body data-cta="on">
+  <div class="wrap">
+    <!-- title -->
+    <div class="title"><span class="a">Topic Name</span> <span class="b">Cheatsheet</span></div>
+    <div class="logo"><span class="lm"><span class="iconify" data-icon="lucide:lightbulb"></span></span><span class="ln">BRAND</span></div>
+
+    <div class="wall">
+
+      <!-- PANEL: getting started (code) -->
+      <div class="panel">
+        <div class="ph">Getting Started</div>
+        <div class="pb">
+          <p>One short setup line.</p>
+          <pre><span class="c"># install</span>
+curl -fsSL https://example.com/x | sh</pre>
+          <p>Then initialize:</p>
+          <pre>cd your_project
+run <span class="k">init</span></pre>
+        </div>
+      </div>
+
+      <!-- PANEL: agentic workflows (mini flow diagram) -->
+      <div class="panel">
+        <div class="ph">Workflows</div>
+        <div class="pb">
+          <div class="flows">
+            <div class="flowcol">
+              <div class="ft">Sequential</div>
+              <div class="chain">
+                <div class="nd">Step 1</div><div class="ar">↓</div>
+                <div class="nd">Step 2</div><div class="ar">↓</div>
+                <div class="nd">Step 3</div>
+              </div>
+            </div>
+            <div class="flowcol">
+              <div class="ft">Parallel</div>
+              <div class="chain">
+                <div class="nd">Lead</div><div class="ar">↓</div>
+                <div class="pair"><div class="nd">A</div><div class="nd">B</div></div><div class="ar">↓</div>
+                <div class="nd">Merge</div>
+              </div>
+            </div>
+            <div class="flowcol">
+              <div class="ft">Self-check</div>
+              <div class="chain">
+                <div class="nd">Lead</div><div class="ar">↓</div>
+                <div class="nd">Worker</div><div class="ar">↓</div>
+                <div class="nd">Verify</div>
+              </div>
+            </div>
+          </div>
+          <div class="flownote">One short note per workflow type.</div>
+          <div class="flownote">A second supporting note.</div>
+        </div>
+      </div>
+
+      <!-- PANEL: hooks (code) -->
+      <div class="panel">
+        <div class="ph">Configuration</div>
+        <div class="pb">
+          <pre>{
+  <span class="k">"hooks"</span>: {
+    <span class="k">"event"</span>: [{
+      <span class="c">"matcher"</span>: "Item",
+      <span class="c">"action"</span>: "run",
+      <span class="c">"timeout"</span>: 5
+    }]
+  }
+}</pre>
+          <ul>
+            <li><b>Runs checks</b> before actions.</li>
+            <li><b>Adds</b> a validation layer.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PANEL: vs comparison (3 columns) -->
+      <div class="panel">
+        <div class="ph">A vs B vs C</div>
+        <div class="pb">
+          <div class="cmp">
+            <div class="cmpcol"><h4>Option A</h4><ul><li>Trait one</li><li>Trait two</li><li>Trait three</li></ul></div>
+            <div class="vs"><span class="iconify" data-icon="lucide:zap"></span></div>
+            <div class="cmpcol"><h4>Option B</h4><ul><li>Trait one</li><li>Trait two</li><li>Trait three</li></ul></div>
+            <div class="vs"><span class="iconify" data-icon="lucide:zap"></span></div>
+            <div class="cmpcol"><h4>Option C</h4><ul><li>Trait one</li><li>Trait two</li><li>Trait three</li></ul></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL: file structure (tree) -->
+      <div class="panel">
+        <div class="ph">File Structure</div>
+        <div class="pb">
+<div class="tree"><span class="d">your_project/</span>
+├─ config.file
+├─ <span class="d">.dir/</span>
+│   ├─ settings.json
+│   └─ <span class="d">modules/</span>
+│       ├─ one/
+│       └─ two/
+├─ <span class="d">src/</span>
+└─ .ignore</div>
+        </div>
+      </div>
+
+      <!-- PANEL: layered memory (CSS funnel-stack, replaces source 3D funnel) -->
+      <div class="panel">
+        <div class="ph">Layered Stack</div>
+        <div class="pb">
+          <div class="funnel">
+            <div class="fband l1">Top Layer<small>broad / always on</small></div>
+            <div class="fband l2">Mid Layer<small>auto-managed</small></div>
+            <div class="fband l3">Base Layer<small>persistent</small></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL: commands (full-width list) -->
+      <div class="panel span2">
+        <div class="ph">Commands</div>
+        <div class="pb">
+          <ul style="column-count:2;column-gap:28px">
+            <li><code>cmd one</code> → Short description here.</li>
+            <li><code>cmd two</code> → Short description here.</li>
+            <li><code>/action</code> → Short description here.</li>
+            <li><code>Key Combo</code> → Short description here.</li>
+            <li><code>cmd three</code> → Short description here.</li>
+            <li><code>/reset</code> → Short description here.</li>
+            <li><code>/config</code> → Short description here.</li>
+            <li><code>cmd four</code> → Short description here.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cta">One short hook line? <span class="hl">DM “Word”</span> for next steps.</div>
+    <div class="foot"><span>The Artificium</span><span><b>@edwinluther-t</b></span></div>
+  </div>
+</body>
+</html>

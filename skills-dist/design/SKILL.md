@@ -128,10 +128,11 @@ Load `references/banner-sizes-and-styles.md` for complete sizes and styles refer
 ### Banner: Workflow
 
 1. **Gather requirements** via `AskUserQuestion` — purpose, platform, content, brand, style, quantity
-2. **Research** — Activate `ui-ux-pro-max`, browse Pinterest for references
-3. **Design** — Create HTML/CSS banner
-4. **Export** — Screenshot to PNG at exact dimensions
-5. **Present** — Show all options side-by-side, iterate on feedback
+2. **Research** — distill references into layout anatomy + a sampled 5–6 hex palette + a mood-matched font pairing + an icon style (see Rendering discipline below)
+3. **Design** — Create HTML/CSS banner; palette as `:root` vars, `.wrap{flex-direction:column}` with the main region `flex:1`
+4. **Export** — Render to PNG via headless Chrome at exact dimensions (see Rendering discipline). Build the `file://` URI with Python `as_uri()`; render at 2× for retina
+5. **Verify** — open the exported PNG and look at it; fix dead space / overflow / ragged heights and re-render
+6. **Present** — Show all options side-by-side, iterate on feedback
 
 ### Banner: Quick Size Reference
 
@@ -168,27 +169,31 @@ Load `references/banner-sizes-and-styles.md` for complete sizes and styles refer
 
 ## Icon Design (Built-in)
 
-15 styles, 12 categories. SVG text output.
+Icons come from the Iconify CDN — thousands of open-source icons across many sets,
+no generation model or bundled binaries needed. Load Iconify once and reference an
+icon by `set:name`.
 
-### Icon: Generate Single Icon
+### Icon: Use in HTML/CSS
 
-```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "settings gear" --style outlined
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "shopping cart" --style filled --color "#6366F1"
-python3 ~/.claude/skills/design/scripts/icon/generate.py --name "dashboard" --category navigation --style duotone
+```html
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<!-- then, anywhere: -->
+<span class="iconify" data-icon="lucide:settings" style="color:#6366F1"></span>
+<span class="iconify" data-icon="lucide:shopping-cart"></span>
 ```
 
-### Icon: Generate Batch Variations
-
-```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "cloud upload" --batch 4 --output-dir ./icons
-```
-
-### Icon: Multi-size Export
-
-```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "user profile" --sizes "16,24,32,48" --output-dir ./icons
-```
+- **Match the icon set's STYLE to the medium**, not just the meaning: clean
+  flat-line UI → `lucide` / `iconoir`; hand-drawn/marker/sketchnote →
+  `streamline-freehand` (wobbly pen stroke); duotone marketing → `lucide` two-tone
+  or a duotone set. Color icons with a CSS var so a retheme is one edit.
+- **Verify names before you use them** — a wrong name renders as a silent blank
+  gap (no error). Confirm every chosen name resolves in one batch call:
+  `curl -s "https://api.iconify.design/lucide.json?icons=settings,cart,user"` →
+  JSON with `not_found: []` means all exist. Some sets have verbose/inconsistent
+  names (e.g. `streamline-freehand`), so never guess — validate.
+- Need standalone SVG files (for a native app, favicon, multi-size export)?
+  Fetch from the API: `curl "https://api.iconify.design/lucide/settings.svg"`,
+  or add `?width=48&color=%236366F1` for size/color.
 
 ### Icon: Top Styles
 
@@ -213,11 +218,15 @@ Load `references/social-photos-design.md` for sizes, templates, best practices.
 1. **Orchestrate** — parallel subagents for independent work
 2. **Analyze** — Parse prompt: subject, platforms, style, brand context, content elements
 3. **Ideate** — 3-5 concepts, present via `AskUserQuestion`
-4. **Design** — brand → design-system → ui-ux-pro-max; HTML per idea × size
-5. **Export** — Screenshot at exact px (2x deviceScaleFactor)
-6. **Verify** — Visually inspect exported designs; fix layout/styling issues and re-export
+4. **Design** — brand → design-system → ui-ux-pro-max; HTML per idea × size; palette as `:root` vars, mood-matched fonts, CDN icons
+5. **Export** — Render to PNG via headless Chrome at exact px, 2× device-scale (see Rendering discipline). Build the `file://` URI with Python `as_uri()`
+6. **Verify** — open every exported PNG and look at it; fix layout/styling issues and re-export
 7. **Report** — Summary to `plans/reports/` with design decisions
 8. **Organize** — Sort output files and reports
+
+For LinkedIn/social-post INFOGRAPHICS specifically (ready archetype templates +
+copy discipline), the `linkedin-post` skill has 24 self-contained HTML templates
+and a proven pipeline — prefer it over hand-building a feed infographic here.
 
 ### Social Photos: Key Sizes
 
@@ -227,6 +236,76 @@ Load `references/social-photos-design.md` for sizes, templates, best practices.
 | IG Story | 1080×1920 | X Post | 1200×675 |
 | IG Carousel | 1080×1350 | LinkedIn | 1200×627 |
 | YT Thumb | 1280×720 | Pinterest | 1000×1500 |
+
+## Rendering discipline (HTML/CSS → PNG)
+
+Any static visual this skill produces — banner, social image, slide, dashboard
+mockup, logo lockup — is HTML/CSS rendered to PNG with headless Chrome. This is
+the whole pipeline; there is no image-generation model assumed.
+
+**Render pipeline:**
+
+```bash
+CHROME="/c/Program Files/Google/Chrome/Application/chrome.exe"  # adjust per OS
+TMP="$TEMP/render_$(date +%s).png"; UDD="$TEMP/cr_udd_$$"
+SRC="path/to/design.html"
+# file://$(pwd) can silently screenshot Chrome's error page (tell: a tiny ~40KB
+# PNG). Build the URI with Python as_uri() instead:
+URI=$(python -c "import pathlib; print(pathlib.Path('$SRC').resolve().as_uri())")
+"$CHROME" --headless=new --disable-gpu --no-sandbox --user-data-dir="$UDD" \
+  --force-device-scale-factor=2 --window-size=1080,1350 --hide-scrollbars \
+  --virtual-time-budget=4000 --screenshot="$TMP" "$URI"
+mv "$TMP" assets/out.png
+```
+
+- `--headless=new` + `--user-data-dir` required; `--force-device-scale-factor=2`
+  for retina (output is 2× the window). `--window-size` MUST match the design's
+  `--w/--h`. `--virtual-time-budget` lets CDN fonts/icons load first.
+- **Always open the PNG and look at it before presenting.** Correct render = 100s
+  of KB at 2×; a tiny PNG means the URI was wrong. Fix dead space / overflow /
+  ragged heights and re-render.
+
+**Theming — palette as CSS vars:** put a 5–6 var block FIRST at `:root`
+(`--bg --panel --line --ink --muted --accent` + any per-item accents). Reference
+the vars everywhere so a full retheme (or light/dark swap) is a few-line edit.
+Sample real hex from the reference/brand; don't force one house palette. Keep body
+contrast ≥ 4.5:1.
+
+**Type by mood:** dev/tech → Space Grotesk / JetBrains Mono; bright/editorial →
+Poppins; soft/rounded → Baloo 2; body almost always Inter. Match the closest
+open-source Google Font; never claim a proprietary one.
+
+**Un-renderable art (honest scope):** photoreal/3D/AI illustrations can't be
+generated here. Build the structure in CSS, expose an IMAGE SLOT
+(`background-image`) for user-supplied art, and hand over a prompt-recipe. Never
+fake generated art.
+
+**Hybrid composition:** a design can borrow a self-contained block from another
+layout (a stat hero, a CTA band, an icon-list rail). Keep ONE base that owns the
+canvas + palette + footer; graft 1–2 blocks and restyle them to the base vars.
+Don't fuse two bases (two canvases/palettes) into one image.
+
+## Dashboard & app-chrome layouts (same discipline)
+
+The render + theming + icon discipline above applies directly to app UI — a
+dashboard, admin panel, or product screen is just a bigger HTML/CSS surface. Build
+it from composable REGIONS, each themed by the same `:root` vars:
+
+- **Top bar** — brand mark left, page title/search center, user/actions right;
+  fixed height (`56–64px`), `--panel` bg, `--line` bottom border.
+- **Left nav** — a fixed-width rail (`220–260px`, or a `64px` icon-only rail);
+  CDN icons (verify names) + labels; active item uses `--accent`; collapsible.
+- **Content region** — `flex:1` so it fills between top bar and footer; grid of
+  cards/panels, each a themed block (stat card, chart panel, table, list).
+- **Footer** — thin `--muted` status/meta row, or omit.
+- **Layout shell:** `body{display:flex}` → left nav + a right
+  `flex:1;flex-direction:column` column holding top bar → `main{flex:1}` →
+  footer. Give the scrolling content region `overflow:auto`.
+- **Light/dark:** because color lives in `:root` vars, a dark theme is a second
+  var set toggled on `<body data-theme="dark">` — don't hardcode colors in
+  components. Chart colors, borders, and icon tints all read from vars.
+- Cards/panels borrow the same block patterns as posters (stat numeral, list
+  rail, progress/chevron row) — reuse them, restyled to the app palette.
 
 ## Workflows
 
@@ -275,7 +354,10 @@ Load `references/social-photos-design.md` for sizes, templates, best practices.
 | `scripts/cip/generate.py` | Generate CIP mockups |
 | `scripts/cip/render-html.py` | Render HTML presentation from CIP mockups |
 | `scripts/cip/core.py` | BM25 search engine for CIP data |
-| `scripts/icon/generate.py` | Generate SVG icons |
+
+Icons do NOT use a script — they load from the Iconify CDN (see Icon Design
+above). Fetch standalone SVGs from the API when needed
+(`curl "https://api.iconify.design/lucide/settings.svg"`).
 
 ## Prerequisites
 

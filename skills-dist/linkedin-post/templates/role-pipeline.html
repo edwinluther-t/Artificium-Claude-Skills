@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--
+  ARCHETYPE: role-pipeline (4-column)
+  WHEN TO USE: a left-to-right process or handoff across 3-5 roles/stages.
+  Arrows imply flow. Use for workflows, agent pipelines, team handoffs.
+  RENDER: landscape often reads better here: --window-size=1200,627 + set --w/--h.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+  :root{--bg:#0a0a0b;--panel:#141416;--line:#26262b;--ink:#f4f4f5;--muted:#a1a1aa;--accent:#f5a623;--w:1080px;--h:1350px;}
+  *{margin:0;box-sizing:border-box}
+  html,body{width:var(--w);height:var(--h)}
+  body{background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;overflow:hidden;
+    background-image:radial-gradient(circle at 1px 1px,#ffffff0a 1px,transparent 0);background-size:32px 32px;}
+  .wrap{height:100%;display:flex;flex-direction:column;padding:80px 64px}
+  .eyebrow{font-family:"JetBrains Mono",monospace;color:var(--accent);letter-spacing:.18em;text-transform:uppercase;font-size:20px}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:58px;line-height:1.04;margin-top:14px;letter-spacing:-.02em;max-width:18ch}
+  .pipe{flex:1;display:flex;align-items:center;gap:10px;margin:48px 0}
+  .stage{flex:1;align-self:stretch;background:var(--panel);border:1px solid var(--line);border-radius:20px;
+    padding:34px 24px;display:flex;flex-direction:column}
+  .num{font-family:"JetBrains Mono",monospace;color:var(--accent);font-size:18px;letter-spacing:.12em}
+  .ic{font-size:48px;color:var(--accent);margin:16px 0}
+  .stage h3{font-family:"Space Grotesk",sans-serif;font-size:30px;margin-bottom:12px}
+  .stage p{color:var(--muted);font-size:19px;line-height:1.4}
+  .arrow{color:var(--accent);font-size:40px;flex:none}
+  .foot{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:18px;border-top:1px solid var(--line);padding-top:24px}
+  .foot b{color:var(--ink)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">// pipeline</div>
+    <h1>How the work moves, stage by stage</h1>
+    <div class="pipe">
+      <div class="stage"><div class="num">01</div><div class="ic iconify" data-icon="lucide:inbox"></div><h3>Intake</h3><p>What enters here.</p></div>
+      <div class="arrow iconify" data-icon="lucide:arrow-right"></div>
+      <div class="stage"><div class="num">02</div><div class="ic iconify" data-icon="lucide:settings"></div><h3>Process</h3><p>What happens here.</p></div>
+      <div class="arrow iconify" data-icon="lucide:arrow-right"></div>
+      <div class="stage"><div class="num">03</div><div class="ic iconify" data-icon="lucide:check-check"></div><h3>Review</h3><p>What gets checked.</p></div>
+      <div class="arrow iconify" data-icon="lucide:arrow-right"></div>
+      <div class="stage"><div class="num">04</div><div class="ic iconify" data-icon="lucide:rocket"></div><h3>Ship</h3><p>What goes out.</p></div>
+    </div>
+    <div class="foot"><span>The Artificium</span><span><b>@edwinluther-t</b></span></div>
+  </div>
+</body>
+</html>

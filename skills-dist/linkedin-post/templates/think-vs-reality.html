@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<!--
+  ARCHETYPE: think-vs-reality (two-column "what people think vs reality")
+  WHEN TO USE: bust a misconception. Left = the naive belief, right = the messy
+  truth. Belief vs FACT (not old-vs-new process — that's before-after; not two
+  valid PEERS — that's versus-list).
+
+  THREE LAYOUTS, toggled by <body data-layout="...">. Only the matching block
+  shows; render one per pass.
+    - "minimal"     : the original — one statement per side, big icon. House
+                      dark-tech theme. Use when the contrast is a single line.
+    - "rich-divider": each side gets an icon-grid + a check/✗ list, split by a
+                      center divider line (no panels). Light green-vs-red theme.
+    - "rich-image"  : same icon-grid + list, but each side leads with a HERO
+                      IMAGE slot (calm person vs overwhelmed person, etc.).
+                      Light green-vs-red theme.
+
+  HERO ART LIMIT (rich-image): the hero illustrations are NOT generated here
+  (no image-gen). Each .hero is a slot — drop in supplied art via <img>, or use
+  the prompt-recipe in the skill .md. Default placeholder shows a big icon.
+
+  ICONS: rich modes use hand-drawn Iconify "streamline-freehand" icons (their
+  wobbly stroke suits the human/messy "reality" feel); minimal uses Lucide.
+  Verify any new freehand name resolves before use (see skill .md).
+
+  RENDER: chrome --headless=new --force-device-scale-factor=2 --window-size=1080,1350 ...
+  (rich modes are taller — use --window-size=1080,1450 and matching --w/--h.)
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+  /* ---- shared canvas ---- */
+  :root{--w:1080px;--h:1250px;  /* rich modes ~1250; minimal wants 1350 (see skill .md) */
+    /* minimal (house dark-tech) */
+    --bg:#0a0a0b;--panel:#141416;--line:#26262b;--ink:#f4f4f5;--muted:#a1a1aa;--accent:#f5a623;
+    /* rich (light belief-vs-reality) */
+    --r-bg:#f4f5f7;--r-ink:#15181f;--r-muted:#5a6170;--r-line:#dfe2e8;--r-panel:#ffffff;
+    --think:#16a34a;     /* left / belief = green "looks easy" */
+    --real:#e0483f;      /* right / reality = red "it's hard" */
+  }
+  *{margin:0;box-sizing:border-box}
+  html,body{width:var(--w);height:var(--h)}
+  body{overflow:hidden}
+  /* only the active layout shows */
+  .L{display:none}
+  body[data-layout="minimal"] .L-min{display:flex}
+  body[data-layout="rich-divider"] .L-rich{display:flex}
+  body[data-layout="rich-image"] .L-rich{display:flex}
+  .wrap{height:100%}  /* display:flex comes from the active-layout selector above */
+
+  /* =================== MINIMAL (original) =================== */
+  .L-min{flex-direction:column;padding:80px 72px;/*display via body[data-layout]*/
+    background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;
+    background-image:radial-gradient(circle at 1px 1px,#ffffff0a 1px,transparent 0);background-size:32px 32px;}
+  .L-min .eyebrow{font-family:"JetBrains Mono",monospace;color:var(--accent);letter-spacing:.18em;text-transform:uppercase;font-size:20px}
+  .L-min h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:60px;line-height:1.04;margin-top:14px;letter-spacing:-.02em;max-width:15ch}
+  .L-min .cols{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:28px;margin:56px 0}
+  .L-min .col{border:1px solid var(--line);border-radius:22px;padding:40px 34px;display:flex;flex-direction:column}
+  .L-min .think{background:#141416}
+  .L-min .real{background:linear-gradient(180deg,#1a1408,#141416);border-color:#f5a62355}
+  .L-min .lab{font-family:"JetBrains Mono",monospace;font-size:18px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .L-min .real .lab{color:var(--accent)}
+  .L-min .col h2{font-family:"Space Grotesk",sans-serif;font-size:38px;margin:14px 0 26px;line-height:1.1}
+  .L-min .col p{font-size:23px;line-height:1.5;color:var(--muted)}
+  .L-min .real p{color:var(--ink)}
+  .L-min .big{font-size:80px;color:var(--accent);margin-top:auto}
+  .L-min .foot{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:18px;border-top:1px solid var(--line);padding-top:24px}
+  .L-min .foot b{color:var(--ink)}
+
+  /* =================== RICH (divider + image share this) =================== */
+  .L-rich{flex-direction:column;padding:56px 56px 44px;
+    background:var(--r-bg);color:var(--r-ink);font-family:"Inter",sans-serif}
+  .L-rich h1{font-family:"Poppins",sans-serif;font-weight:800;font-size:74px;line-height:.95;
+    text-align:center;letter-spacing:-.02em;text-transform:uppercase}
+  .L-rich .heads{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:26px}
+  .pill{font-family:"Poppins",sans-serif;font-weight:700;font-size:22px;color:#fff;
+    text-align:center;padding:11px 18px;border-radius:12px;letter-spacing:.01em}
+  .pill.l{background:var(--think)} .pill.r{background:var(--real)}
+  .subl{text-align:center;font-size:21px;color:var(--r-muted);margin-top:12px;font-weight:500}
+
+  /* two sides; center divider for rich-divider mode */
+  .sides{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:24px;position:relative}
+  body[data-layout="rich-divider"] .sides::before{content:"";position:absolute;left:50%;top:6px;bottom:6px;
+    width:2px;background:var(--r-line);transform:translateX(-50%)}
+  .side{display:flex;flex-direction:column;min-width:0}
+
+  /* hero image slot — only shown in rich-image mode */
+  .hero{display:none}
+  body[data-layout="rich-image"] .hero{display:flex;align-items:center;justify-content:center;
+    height:230px;border-radius:18px;margin-bottom:22px;overflow:hidden;
+    background:var(--r-panel);border:1.5px solid var(--r-line)}
+  .hero img{width:100%;height:100%;object-fit:cover}
+  .hero .ph{font-size:96px}
+  .side.s-l .hero .ph{color:var(--think)} .side.s-r .hero .ph{color:var(--real)}
+
+  /* icon grid (2 cols of small concept chips) */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+  body[data-layout="rich-divider"] .grid{margin-bottom:6px}
+  .chip{display:flex;gap:10px;align-items:center;font-size:16px;line-height:1.2;color:var(--r-ink)}
+  .chip .ic{font-size:28px;flex:none}
+  .s-l .chip .ic{color:var(--think)} .s-r .chip .ic{color:var(--real)}
+  /* single-statement side (left in 05 is light on grid) can use .lead instead */
+  .lead{font-size:23px;line-height:1.45;color:var(--r-muted);margin-bottom:8px}
+
+  /* check / ✗ list */
+  .marks{list-style:none;margin-top:18px;flex:1}
+  .marks li{display:flex;gap:11px;align-items:flex-start;font-size:19px;line-height:1.3;margin-bottom:13px;font-weight:500}
+  .marks li .m{font-size:24px;flex:none;margin-top:-1px}
+  .s-l .marks li .m{color:var(--think)} .s-r .marks li .m{color:var(--real)}
+
+  .banner{margin-top:26px;text-align:center;font-family:"Poppins",sans-serif;font-weight:600;
+    font-size:24px;line-height:1.4;color:var(--r-ink);background:var(--r-panel);
+    border:1.5px solid var(--r-line);border-radius:16px;padding:22px 28px}
+  .banner b{color:var(--think)}
+  .L-rich .foot{display:flex;justify-content:space-between;align-items:center;color:var(--r-muted);
+    font-size:18px;margin-top:22px}
+  .L-rich .foot b{color:var(--r-ink)}
+</style>
+</head>
+
+<!-- SET data-layout to one of: minimal | rich-divider | rich-image -->
+<body data-layout="rich-image">
+
+  <!-- ===================== MINIMAL ===================== -->
+  <div class="wrap L L-min">
+    <div class="eyebrow">// myth vs fact</div>
+    <h1>What everyone thinks vs what's true</h1>
+    <div class="cols">
+      <div class="col think">
+        <span class="lab">What people think</span>
+        <h2>The common assumption</h2>
+        <p>State the belief plainly, the way people actually say it.</p>
+        <div class="big iconify" data-icon="lucide:cloud"></div>
+      </div>
+      <div class="col real">
+        <span class="lab">Reality</span>
+        <h2>What actually happens</h2>
+        <p>State the correction. One claim, no hedging, evidence if you have it.</p>
+        <div class="big iconify" data-icon="lucide:target"></div>
+      </div>
+    </div>
+    <div class="foot"><span>The Artificium</span><span><b>@edwinluther-t</b></span></div>
+  </div>
+
+  <!-- ============== RICH (divider AND image use this block) ============== -->
+  <div class="wrap L L-rich">
+    <h1>The Role</h1>
+    <div class="heads">
+      <div class="pill l">What people think</div>
+      <div class="pill r">What it actually involves</div>
+    </div>
+    <div class="subl"><span>One short line — the breezy belief</span></div>
+
+    <div class="sides">
+      <!-- LEFT: the naive belief. Often lighter — a lead line + a short ✓ list. -->
+      <div class="side s-l">
+        <!-- hero slot (rich-image only): replace .ph with <img src="..."> -->
+        <div class="hero"><span class="ph iconify" data-icon="streamline-freehand:smiley-thumbs-up"></span></div>
+        <p class="lead">Uses the tools and it just works.</p>
+        <ul class="marks">
+          <li><span class="m iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Belief step one</li>
+          <li><span class="m iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Belief step two</li>
+          <li><span class="m iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Belief step three</li>
+          <li><span class="m iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Belief step four</li>
+          <li><span class="m iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Looks so easy</li>
+        </ul>
+      </div>
+
+      <!-- RIGHT: the messy reality. Carries the icon-grid of real concerns. -->
+      <div class="side s-r">
+        <div class="hero"><span class="ph iconify" data-icon="streamline-freehand:laptop-action-search"></span></div>
+        <div class="grid">
+          <div class="chip"><span class="ic iconify" data-icon="streamline-freehand:messages-bubble-square-search"></span>Concern one</div>
+          <div class="chip"><span class="ic iconify" data-icon="streamline-freehand:currency-euro-dollar-exchange"></span>Concern two</div>
+          <div class="chip"><span class="ic iconify" data-icon="streamline-freehand:database"></span>Concern three</div>
+          <div class="chip"><span class="ic iconify" data-icon="streamline-freehand:cash-payment-coin-1"></span>Concern four</div>
+          <div class="chip"><span class="ic iconify" data-icon="streamline-freehand:seo-search-graph"></span>Concern five</div>
+          <div class="chip"><span class="ic iconify" data-icon="streamline-freehand:alerts-warning-triangle"></span>Concern six</div>
+          <div class="chip"><span class="ic iconify" data-icon="streamline-freehand:analytics-graph-bar-horizontal"></span>Concern seven</div>
+          <div class="chip"><span class="ic iconify" data-icon="streamline-freehand:security-computer-shield"></span>Concern eight</div>
+        </div>
+        <ul class="marks">
+          <li><span class="m iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Handle the hard cases</li>
+          <li><span class="m iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Optimize and monitor</li>
+          <li><span class="m iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Deploy and scale it</li>
+          <li><span class="m iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Make it robust for real</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="banner">The job is not the easy part — it's <b>building the reliable system</b> behind it.</div>
+    <div class="foot"><span>The Artificium</span><span><b>@edwinluther-t</b></span></div>
+  </div>
+
+</body>
+</html>

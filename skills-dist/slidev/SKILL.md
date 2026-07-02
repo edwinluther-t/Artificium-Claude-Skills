@@ -182,6 +182,30 @@ Presenter notes go here
 | `fact` / `statement` | Data/statement display |
 | `intro` / `end` | Intro/end slides |
 
+## Craft: theming, icons, charts, scope
+
+- **Theme with CSS variables**, not scattered hex. Define a small palette
+  (`--bg --panel --line --ink --muted --accent`) in the deck's `style.css` / theme
+  and drive UnoCSS/inline styles off it, so a retheme or a dark variant is one block.
+  Slidev has built-in dark mode — keep colors in vars so both modes work without
+  per-slide overrides. Sample real hex from the topic; keep body contrast ≥ 4.5:1.
+- **Icons: Slidev renders Iconify inline** (`<carbon-logo-github />`,
+  `<lucide-database />`, etc.) — pick a set whose stroke matches the deck's mood and
+  install the matching `@iconify-json/*` collection. VERIFY the name exists first
+  (`curl -s "https://api.iconify.design/lucide.json?icons=a,b"` → `not_found: []`);
+  an unknown icon renders as a silent blank.
+- **Charts inline as CSS/SVG or a Vue chart component** (Slidev allows Vue in
+  slides) rather than pasting a screenshot — a `conic-gradient` pie, flex'd bars, a
+  conic-ring gauge, colored from theme vars so they retheme with the deck.
+- **Hybrid slides:** borrow a self-contained block from another layout (a big stat
+  numeral, a comparison pair, a stepped progression, a quote band) into a slide, but
+  keep the deck's ONE theme and restyle the block to its vars — don't run a second
+  palette on one slide.
+- **Honest scope on art:** no image-generation model is available here — photoreal/
+  3D/AI illustrations can't be produced. Use the `image` layouts with a user-supplied
+  asset (or an `iframe`/CSS scene), and hand over a prompt-recipe for art the user
+  must generate themselves. Never claim to have rendered art you couldn't.
+
 ## Resources
 
 - Documentation: https://sli.dev

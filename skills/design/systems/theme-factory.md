@@ -56,3 +56,42 @@ After a preferred theme is selected:
 
 ## Create your Own Theme
 To handle cases where none of the existing themes work for an artifact, create a custom theme. Based on provided inputs, generate a new theme similar to the ones above. Give the theme a similar name describing what the font/color combinations represent. Use any basic description provided to choose appropriate colors/fonts. After generating the theme, show it for review and verification. Following that, apply the theme as described above.
+
+### How to structure and build a theme (so it applies cleanly)
+
+**Express every theme as a small set of CSS variables, and apply the theme by
+swapping only those vars** — never by hardcoding hex through the artifact. A theme
+is 5–6 core roles plus type:
+
+```css
+:root { --bg:#0a0a0b; --panel:#141416; --line:#26262b;
+        --ink:#f4f4f5; --muted:#a1a1aa; --accent:#f5a623; }
+```
+
+Every element references the roles (`background:var(--bg)`, `color:var(--ink)`,
+`border-color:var(--line)`, accent on `var(--accent)`). Applying a different theme
+= replacing that one block. A dark variant is a second block on
+`[data-theme="dark"]`. This is what makes a theme portable across slides, docs,
+and landing pages without touching markup.
+
+**Building a good color combination (when generating a custom theme):**
+- Anchor on ONE accent that carries the mood; keep bg/panel/line as a neutral
+  ramp (near-tone steps: bg darkest/lightest, panel one step in, line the divider).
+  A single confident accent reads more professional than several competing hues.
+- Derive muted text as a mid-point between ink and bg — not pure grey — so it
+  belongs to the palette.
+- Sample from the source when there is one (a brand, a reference image): pull real
+  hex rather than inventing, and match the mood.
+- **Verify contrast**: body text vs bg ≥ 4.5:1, large text ≥ 3:1, in BOTH light
+  and dark variants. Lighten `--muted` on dark, darken it on light. A theme that
+  fails contrast isn't done.
+
+**Type by mood** (map to open-source Google Fonts, don't claim proprietary ones):
+dev/tech → Space Grotesk / JetBrains Mono; bright/editorial → Poppins; soft/rounded
+→ Baloo 2; neutral-modern → Sora; body almost always Inter. Pair one display + one
+body; load only the weights used.
+
+**Verify by rendering, not by imagining.** When the artifact renders to an image
+(HTML → PNG via headless Chrome), export it and actually look at the themed result
+before calling it applied — check contrast, that the accent lands where intended,
+and that nothing kept a stale hardcoded color.

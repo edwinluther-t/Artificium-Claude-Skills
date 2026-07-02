@@ -126,6 +126,37 @@ Keep conversion cross-platform. Do not rely on macOS-only tools when Python can 
 - Fonts may come from Google Fonts or Fontshare.
 - Prefer atmospheric backgrounds, strong type hierarchy, and a clear visual direction.
 - Use abstract shapes, gradients, grids, noise, and geometry rather than illustrations.
+- **Theme with CSS variables at `:root`** — a 5–6 var palette
+  (`--bg --panel --line --ink --muted --accent`) referenced by every slide, so the
+  whole deck rethemes (or gets a light/dark variant) from one block. Sample real hex
+  from the topic/brand; don't scatter hardcoded color across slides.
+- **Type by mood:** dev/tech → Space Grotesk / JetBrains Mono; bright/editorial →
+  Poppins; body Inter. Match the closest open-source font; never claim a proprietary
+  one.
+- **Icons via Iconify CDN, matched to the medium and VERIFIED.** Flat deck → `lucide`;
+  hand-drawn → `streamline-freehand`. Confirm names resolve before use
+  (`curl -s "https://api.iconify.design/lucide.json?icons=a,b"` → `not_found: []`) —
+  a wrong name is a silent blank gap.
+- **Inline data-viz as real CSS/SVG**, not screenshots: a `conic-gradient` pie, a
+  flex'd bar/spark row, a conic-ring gauge — colored from the theme vars so charts
+  match the deck and stay crisp.
+- **Hybrid slide composition:** a slide can borrow a self-contained block from another
+  layout (a giant stat numeral, a comparison-columns block, a chevron progression, a
+  quote band). Keep the deck's ONE base theme; graft the block and restyle it to the
+  palette vars — don't introduce a second palette per slide.
+
+### Rendering / export & honest scope
+
+- If exporting slides to images with headless Chrome, build the `file://` URI with
+  Python `pathlib.as_uri()` — a raw `file://$(pwd)` can silently screenshot Chrome's
+  error page (tell: a tiny output file). Render at `--force-device-scale-factor=2`
+  with a `--window-size` matching the slide canvas, and **open the export and look at
+  it** before delivering.
+- **No image-generation model is assumed here** — photoreal photos, 3D renders, and
+  AI illustrations can't be produced. Build the structure in CSS and leave a real
+  image slot for user-supplied art plus a ready-to-paste prompt-recipe. Never fake a
+  generated visual (this is why abstract CSS shapes/gradients are preferred over
+  illustrations above).
 
 ### JavaScript
 

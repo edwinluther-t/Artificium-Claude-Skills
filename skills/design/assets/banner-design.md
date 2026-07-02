@@ -18,7 +18,9 @@ Design banners across social, ads, web, and print formats. Generates multiple ar
 
 ## Prerequisites
 
-**Python:** This skill uses Python scripts. On Windows, use `python` instead of `python3` (e.g., `python scripts/search.py` instead of `python3 scripts/search.py`).
+**Render pipeline:** This skill renders HTML/CSS to PNG with headless Chrome. On
+Windows use `python` (not `python3`). No image-generation model is assumed — see
+Scope limits below.
 
 ## Workflow
 
@@ -34,48 +36,75 @@ Collect via AskUserQuestion:
 
 ### Step 2: Research & Art Direction
 
-1. Activate `ui-ux-pro-max` skill for design intelligence
-2. Use a browser to research Pinterest for design references:
-   ```
-   Navigate to pinterest.com → search "[purpose] banner design [style]"
-   Screenshot 3-5 reference pins for art direction inspiration
-   ```
-3. Select 2-3 complementary art direction styles from references:
-   `references/banner-sizes-and-styles.md`
+1. If available, activate `ui-ux-pro-max` for design intelligence.
+2. Gather references honestly — distill, don't pixel-trace. From any reference
+   (a screenshot, a brand's site, a saved image), pull out the reusable pattern:
+   - **Layout anatomy** — the repeating unit and how units relate, written as a
+     flow: `logo → headline → CTA` or `left copy | right art`.
+   - **Palette** — sample 5–6 real hex off the reference: `bg / panel / line /
+     ink / muted / accent`. Note light vs dark, one accent vs per-item accents.
+   - **Type** — match to open-source Google Fonts by MOOD: dev/tech → Space
+     Grotesk / JetBrains Mono; bright/editorial → Poppins; soft/rounded → Baloo 2.
+     Body is almost always Inter. Never claim a proprietary font — use the
+     equivalent and say so.
+   - **Icons** — flat line / filled / colored? Map to a Lucide set via Iconify
+     CDN. Match icon STYLE to the medium: a hand-drawn/marker banner wants
+     `streamline-freehand`, not clean Lucide. Verify icon names resolve before
+     use (`curl "https://api.iconify.design/<prefix>.json?icons=a,b,c"` →
+     `not_found: []`); an unverified name renders as a silent blank gap.
+3. Select 2–3 complementary art directions (see Art Direction Styles below).
 
-### Step 3: Design & Generate Options
+### Step 3: Design Options
 
-For each art direction option:
+For each art direction option, create an HTML/CSS banner:
 
-1. **Create HTML/CSS banner**
-   - Use exact platform dimensions from size reference
-   - Apply safe zone rules (critical content in central 70-80%)
-   - Max 2 typefaces, single CTA, 4.5:1 contrast ratio
-   - Inject brand context via `inject-brand-context.cjs`
+- **Canvas** — use exact platform dimensions from the size reference. Set
+  `html,body{width:var(--w);height:var(--h)}` and keep `--w/--h` in sync with the
+  render `--window-size`.
+- **Theming via vars** — put a 5–6 var palette block FIRST at `:root`
+  (`--bg --panel --line --ink --muted --accent`). Everything downstream references
+  the vars, so a full retheme is a 5-line edit. Re-sample hex per reference; don't
+  force one house palette.
+- **Layout** — outer `.wrap{height:100%;display:flex;flex-direction:column}` owns
+  the full canvas; give the main region `flex:1` so it fills and you get no bottom
+  dead-space. Safe zones: critical content in the central 70–80%.
+- **Rules** — max 2 typefaces, single CTA, ≥4.5:1 contrast, ≥16px body, ≥32px
+  headline.
+- **Un-renderable art** (photoreal/3D/AI hero illustrations) — do NOT fake it.
+  Build the structure in CSS (gradient/glass/glow is fine), leave an IMAGE SLOT
+  (a `background-image` on the art element) for user-supplied art, and hand over a
+  prompt-recipe. See Scope limits.
+- **Hybrid** — a banner can borrow a self-contained block from another layout (a
+  giant stat numeral, a proof-stat strip, a CTA band). Keep ONE base that owns the
+  canvas + palette + footer; graft 1–2 blocks and restyle them to the base vars.
 
-2. **Generate visual elements**
+### Step 4: Export Banners to Images (render pipeline)
 
-   Search prompt inspiration:
-   ```bash
-   python3 .claude/skills/ai-artist/scripts/search.py "<banner style keywords>"
-   ```
+Render each HTML banner to PNG with headless Chrome. Render to `$TEMP` then move
+the file (Chrome may be blocked from writing into the repo dir):
 
-   Generate background/pattern visuals (use available image generation tool):
-   - For backgrounds, gradients, patterns: fast mode, 2K quality
-   - For hero illustrations, product shots, complex art: high-quality mode, 4K
-   - Aspect ratios: `1:1`, `16:9`, `9:16`, `3:4`, `4:3`, `2:3`, `3:2`
-   - Match to platform — e.g., Twitter header = `3:1`, Instagram story = `9:16`
-   - Prompt tip: include "no text, no letters, no words" — text will be overlaid in HTML step
+```bash
+CHROME="/c/Program Files/Google/Chrome/Application/chrome.exe"  # adjust per OS
+TMP="$TEMP/banner_$(date +%s).png"; UDD="$TEMP/cr_udd_$$"
+SRC="path/to/banner.html"
+# Build a correct file:// URI — a raw file://$(pwd) can silently screenshot
+# Chrome's error page (tell: a tiny ~40KB PNG). Use Python as_uri():
+URI=$(python -c "import pathlib; print(pathlib.Path('$SRC').resolve().as_uri())")
+"$CHROME" --headless=new --disable-gpu --no-sandbox --user-data-dir="$UDD" \
+  --force-device-scale-factor=2 --window-size=1500,500 --hide-scrollbars \
+  --virtual-time-budget=4000 --screenshot="$TMP" "$URI"
+mv "$TMP" assets/banners/out.png
+```
 
-3. **Compose final banner** — overlay text, CTA, logo on generated visual in HTML/CSS
-
-### Step 4: Export Banners to Images
-
-After designing HTML banners, export each to PNG:
-
-1. **Serve HTML files** via local server (python http.server or similar)
-2. **Screenshot each banner** at exact platform dimensions
-3. **Compress if needed** (target under 5MB per file)
+- `--headless=new` + `--user-data-dir` are required (else "Missing headless user
+  data directory").
+- `--force-device-scale-factor=2` → retina-sharp (output is 2× the window size).
+- `--window-size` MUST match the banner's `--w/--h`. Change one, change both.
+- `--virtual-time-budget` gives CDN fonts/icons time to load before capture.
+- **Always open the exported PNG and look at it** before presenting. A correct
+  render is large (100s of KB at 2×); a tiny PNG means the URI was wrong. Fix
+  layout bugs (dead space, overflow, ragged heights) and re-render until it holds.
+- Compress if needed (target under 5MB per file).
 
 **Output path convention:**
 ```
@@ -141,7 +170,32 @@ Full 22 styles: `references/banner-sizes-and-styles.md`
 - **Typography**: max 2 fonts, min 16px body, ≥32px headline
 - **Text ratio**: under 20% for ads (Meta penalizes heavy text)
 - **Print**: 300 DPI, CMYK, 3-5mm bleed
-- **Brand**: always inject via `inject-brand-context.cjs`
+- **Brand**: apply the user's brand palette + fonts + logo. Ask for brand
+  guidelines if not given; never ship a banner carrying a placeholder/other
+  brand's mark as if it were the user's.
+
+## Scope limits (be honest, don't fake)
+
+This skill renders HTML/CSS → PNG. It **cannot** generate photoreal photos, 3D
+renders, or AI-illustrated scenes — no image-generation model is assumed here.
+When a design needs that art:
+
+- Build the renderable structure in CSS and expose an IMAGE SLOT for
+  user-supplied art (a `background-image` on the hero/art element), OR
+- Deliver a ready-to-paste PROMPT-RECIPE (subject, style, lighting, palette,
+  aspect ratio) for the user's own image tool.
+
+Say plainly which parts are rendered and which are a prompt. Never claim to have
+generated art you couldn't.
+
+## Related
+
+For LinkedIn/social-post infographics specifically (24 ready HTML archetype
+templates — comparison columns, versus lists, hiring/event/person announcements,
+carousels, architecture maps, etc. — with a proven render pipeline and hybrid
+composition), use the `linkedin-post` skill. This skill (`banner-design`) is for
+covers/headers/ads/heroes across platforms; `linkedin-post` is for feed
+infographics.
 
 ## Security
 
