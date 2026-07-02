@@ -532,6 +532,26 @@ Remind user to:
 
 ## Best Practices
 
+### Composing social / OG images (HTML → PNG)
+
+When an OG or social image is composed in HTML/CSS (rather than a pure text-on-color
+render) and screenshotted:
+
+- **Theme with CSS vars.** Put a 5–6 var palette block first at `:root`
+  (`--bg --panel --line --ink --muted --accent`) and reference it everywhere, so a
+  retheme or light/dark swap is a few-line edit. Sample real hex from the brand or
+  logo; don't invent a generic palette. Keep text-vs-bg contrast ≥ 4.5:1.
+- **Type by mood** (open-source Google Fonts, never claim proprietary): dev/tech →
+  Space Grotesk; bright/editorial → Poppins; body Inter. Load only the weights used.
+- **Icons via Iconify CDN, verified.** Match the set's stroke to the medium; confirm
+  any icon name resolves (`curl -s "https://api.iconify.design/lucide.json?icons=a,b"`
+  → `not_found: []`) — a wrong name is a silent blank gap.
+- **Render at 2× and LOOK at the PNG** before delivering. Build the `file://` URI
+  with Python `pathlib.as_uri()` (a raw `file://$(pwd)` can silently capture Chrome's
+  error page — tell: a tiny output file). Fix overflow / cramped text and re-render.
+- **Honest scope:** photoreal/3D/AI hero art can't be generated here. Leave an image
+  slot for user-supplied art + a prompt-recipe; never fake it.
+
 ### Image Requirements
 - **Logos**: Should be square or nearly square for best results
 - **High resolution**: Provide largest available version (scripts will downscale)

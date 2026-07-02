@@ -18,6 +18,47 @@ To build powerful frontend artifacts, follow these steps:
 
 VERY IMPORTANT: To avoid what is often referred to as "AI slop", avoid using excessive centered layouts, purple gradients, uniform rounded corners, and Inter font.
 
+**Theme with CSS variables, never hardcoded color.** shadcn/ui already exposes
+its palette as HSL vars (`--background --foreground --card --border --primary
+--muted-foreground`) — drive every component off those, so a full retheme or a
+light/dark swap is editing one `:root` / `.dark` block, not the components. Sample
+a real palette (from the brand or a reference) into those vars rather than shipping
+the shadcn default slate; pick a genuine accent, not generic indigo.
+
+**App-shell / dashboard layout — compose from regions.** A dashboard or app screen
+is a shell of themed regions: a top bar (`h-14/16`, brand + title + actions), a
+left nav rail (`w-56/64`, or a `w-16` icon rail; active item uses `--primary`), a
+`flex-1 overflow-auto` content region (a grid of cards/panels), an optional thin
+footer. Shell = `flex` row: nav + a `flex-1 flex-col` column holding the top bar →
+`main flex-1` → footer. Each card is a themed block; reuse a card's shape across
+the grid.
+
+**Inline data-viz: prefer real CSS/SVG charts** (or a lib like Recharts) over an
+image. A pie is a `conic-gradient`; a bar/spark row is flex'd divs; color the
+series from theme vars so charts retheme with the app. Only reach for a raster
+image when the visual genuinely can't be built in the DOM.
+
+**Icons from a CDN set — and verify names.** Use `lucide-react` (already in the
+stack) or Iconify for anything else. Match the set's stroke to the medium. If you
+reference an icon by string name (Iconify), confirm it resolves first
+(`curl -s "https://api.iconify.design/lucide.json?icons=a,b,c"` → `not_found: []`)
+— a wrong name renders as a silent blank gap.
+
+**Verify the rendered output before presenting.** After bundling, actually view
+the artifact (Step 5) at least once for anything non-trivial — look at it, fix
+overflow / dead space / ragged card heights, don't ship a layout you haven't seen.
+
+**Honest scope on art.** Photoreal photos, 3D renders, and AI illustrations can't
+be generated here. Build the structure and leave a real image slot (an `<img>` /
+`background-image` the user fills) plus a ready-to-paste prompt-recipe — never fake
+a generated asset.
+
+**Compose, don't clone (hybrid).** A screen can borrow a self-contained block from
+another layout — a stat-hero, a proof-stat strip, a CTA band, an icon-list rail.
+Keep ONE base that owns the canvas + palette + shell; graft one or two blocks and
+restyle them to the theme vars. Don't fuse two different palettes/shells into one
+screen.
+
 ## Quick Start
 
 ### Step 1: Initialize Project

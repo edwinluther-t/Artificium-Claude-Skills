@@ -203,6 +203,44 @@ Covers:
 - Museum-quality execution
 - Multi-page design systems
 
+## Composition, Charts, Icons & Scope
+
+Craft rules that apply on top of the theming/component references above.
+
+**App-shell / dashboard layout — compose from themed regions.** A screen is a
+shell, not a pile of components: a top bar (`h-14/16` — brand + title + actions),
+a left nav rail (`w-56/64`, or a `w-16` icon rail; active item on `--primary`), a
+`flex-1 overflow-auto` content region (a grid of cards), an optional thin footer.
+Shell = a `flex` row: nav + a `flex-1 flex-col` column holding the top bar →
+`main flex-1` → footer. Every region reads its color from the theme vars, so one
+retheme covers the whole shell.
+
+**Inline data-viz: build real CSS/SVG charts, don't drop in images.** A pie is a
+`conic-gradient`; a spark/bar row is flex'd `<div>`s with heights from the data; a
+radial gauge is a conic ring. For anything richer use a charting lib (Recharts,
+etc.) — and in all cases color the series from theme vars so charts retheme with
+the app. Reserve raster images for visuals that genuinely can't live in the DOM.
+
+**Icons from a CDN set — match the medium and VERIFY names.** `lucide-react` for
+flat product UI; Iconify for other sets (hand-drawn → `streamline-freehand`, etc.).
+When referencing an Iconify icon by string, confirm it resolves first —
+`curl -s "https://api.iconify.design/lucide.json?icons=a,b,c"` → `not_found: []` —
+because a wrong name fails silently as a blank gap.
+
+**Hybrid composition.** A screen can borrow a self-contained block from another
+layout (a stat-hero, a proof-stat strip, a CTA band, an icon-list rail). Keep ONE
+base owning the canvas + palette + shell; graft one or two blocks, restyle them to
+the theme vars. Don't fuse two palettes/shells into one screen.
+
+**Honest scope on art.** No image-generation model is assumed here — photoreal
+photos, 3D renders, and AI illustrations can't be produced. Build the structure,
+leave a real image slot (an `<img>`/`background-image` the user supplies) plus a
+ready-to-paste prompt-recipe. Never fake a generated asset.
+
+**Verify by looking.** For anything non-trivial, view the built UI (render to an
+image or open it) and fix overflow / dead space / ragged card heights before
+presenting — don't ship a layout you haven't seen.
+
 ## Utility Scripts
 
 **Python automation for component installation and configuration generation.**

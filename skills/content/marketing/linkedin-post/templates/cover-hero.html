@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ARCHETYPE: cover-hero
+  WHEN TO USE: an article / blog / link COVER — a "new post" or "read this" hero
+    where a bold multi-line headline sits over a rich background. The headline is
+    the message; the background sets the mood.
+  NOTE: unlike the other archetypes this template does NOT copy a source layout —
+    it ships a self-contained SCI-FI CSS scene (deep indigo→teal space gradient,
+    a perspective grid horizon, a glowing CSS connector-node network, neon scan
+    accents) so it stands alone with NO supplied art. An image slot is optional.
+  ANATOMY: full-bleed background (CSS scene OR image) → legibility scrim →
+    kicker chip → big 2-3 line gradient headline → meta/footer row.
+  DIFFERS FROM: carousel-slide cover (a dark-glass STRUCTURED deck slide); this is
+    a full-bleed cinematic cover. Not an infographic — no data structure.
+  DATA MODES (on <body>):
+    data-bg="css|image"     CSS sci-fi scene (default) vs a supplied hero image.
+    data-net="on|off"       the glowing CSS connector-node network.
+    data-kicker="on|off"    the top kicker chip.
+  DEFAULT THEME: sci-fi deep indigo/teal + cyan/violet/magenta neon,
+    Space Grotesk 700 / Inter / JetBrains Mono. LANDSCAPE 1200×630.
+  RENDER: chrome --headless=new --window-size=1200,630 ... cover-hero.html
+-->
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+:root{
+  /* ---- sci-fi palette ---- */
+  --bg1:#0a0f2c; --bg2:#0d2438; --bg3:#10183a;
+  --cyan:#22e3d6; --violet:#7c5cff; --magenta:#ff4fd8;
+  --ink:#ffffff; --muted:#9fb4d8; --line:rgba(120,160,255,.18);
+  --grid:rgba(80,150,220,.16);
+  --w:1200px; --h:630px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:var(--w);height:var(--h);font-family:Inter,sans-serif;
+  color:var(--ink);overflow:hidden}
+body{position:relative;
+  background:
+    radial-gradient(120% 80% at 18% 12%,rgba(124,92,255,.30),transparent 55%),
+    radial-gradient(110% 90% at 88% 22%,rgba(34,227,214,.22),transparent 55%),
+    radial-gradient(120% 120% at 70% 110%,rgba(255,79,216,.18),transparent 55%),
+    linear-gradient(150deg,var(--bg1),var(--bg2) 55%,var(--bg3))}
+
+/* perspective grid horizon */
+.grid{position:absolute;left:-20%;right:-20%;bottom:-6%;height:62%;z-index:0;
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:48px 48px;
+  transform:perspective(520px) rotateX(62deg);
+  transform-origin:bottom center;
+  mask-image:linear-gradient(to top,#000 8%,transparent 78%);
+  -webkit-mask-image:linear-gradient(to top,#000 8%,transparent 78%)}
+
+/* image-bg mode: a supplied hero fills the canvas */
+.imgbg{position:absolute;inset:0;z-index:0;background-size:cover;
+  background-position:center;display:none}
+body[data-bg="image"] .imgbg{display:block}
+body[data-bg="image"] .grid,body[data-bg="image"] .net{display:none}
+
+/* ---- glowing CSS connector-node network (abstract, not robots) ---- */
+.net{position:absolute;inset:0;z-index:1}
+body[data-net="off"] .net{display:none}
+.net svg{width:100%;height:100%}
+.node{position:absolute;border-radius:14px;display:grid;place-items:center;
+  background:rgba(10,18,46,.72);border:1px solid rgba(120,160,255,.35);
+  box-shadow:0 0 22px rgba(34,227,214,.25),inset 0 0 14px rgba(60,120,255,.18);
+  backdrop-filter:blur(2px)}
+.node .iconify{font-size:26px}
+.node.hub{width:96px;height:96px;border-radius:24px;
+  border-color:rgba(34,227,214,.6);
+  box-shadow:0 0 46px 8px rgba(34,227,214,.5),inset 0 0 22px rgba(34,227,214,.35)}
+.node.hub .iconify{font-size:46px;color:var(--cyan)}
+.node.s{width:62px;height:62px}
+.n-hub{top:30%;left:50%;transform:translate(-50%,-50%)}
+.n1{top:13%;left:20%}.n2{top:11%;left:74%}
+.n3{top:34%;left:84%}.n4{top:13%;left:47%}
+.dotpulse{position:absolute;width:7px;height:7px;border-radius:50%;
+  background:var(--cyan);box-shadow:0 0 10px 2px var(--cyan)}
+
+/* scrim for headline legibility */
+.scrim{position:absolute;left:0;right:0;bottom:0;height:74%;z-index:2;
+  background:linear-gradient(to top,rgba(5,8,24,.96) 18%,rgba(5,8,24,.72) 48%,transparent)}
+
+/* ---- foreground content ---- */
+.fg{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;
+  justify-content:flex-end;padding:54px 60px 46px}
+.kicker{align-self:flex-start;display:inline-flex;align-items:center;gap:9px;
+  font-family:JetBrains Mono;font-weight:700;font-size:15px;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--cyan);
+  background:rgba(34,227,214,.10);border:1px solid rgba(34,227,214,.4);
+  padding:9px 16px;border-radius:30px;margin-bottom:22px}
+.kicker .iconify{font-size:17px}
+body[data-kicker="off"] .kicker{display:none}
+.head{font-family:Space Grotesk;font-weight:700;font-size:64px;line-height:1.02;
+  letter-spacing:-1.5px;max-width:92%;
+  text-shadow:0 4px 30px rgba(0,0,0,.6)}
+.head .hl{background:linear-gradient(100deg,var(--cyan),var(--violet) 55%,var(--magenta));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.meta{display:flex;align-items:center;justify-content:space-between;
+  margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+.meta .who{display:flex;align-items:center;gap:12px;font-weight:600;font-size:18px;
+  color:#dce6ff}
+.meta .who .dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 10px 2px var(--cyan)}
+.meta .tag{font-family:JetBrains Mono;font-weight:500;font-size:15px;
+  color:var(--muted);letter-spacing:1px}
+</style>
+</head>
+<body data-bg="css" data-net="on" data-kicker="on">
+  <div class="imgbg"></div>
+  <div class="grid"></div>
+
+  <div class="net">
+    <svg viewBox="0 0 1200 630" preserveAspectRatio="none" fill="none">
+      <defs>
+        <linearGradient id="ln" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#22e3d6" stop-opacity=".0"/>
+          <stop offset=".5" stop-color="#22e3d6" stop-opacity=".7"/>
+          <stop offset="1" stop-color="#7c5cff" stop-opacity=".0"/>
+        </linearGradient>
+      </defs>
+      <g stroke="url(#ln)" stroke-width="2">
+        <path d="M600 189 C 420 150 330 120 240 100"/>
+        <path d="M600 189 C 560 130 560 110 564 80"/>
+        <path d="M600 189 C 760 150 850 120 888 92"/>
+        <path d="M600 189 C 840 180 960 200 1010 214"/>
+      </g>
+    </svg>
+    <div class="node hub n-hub"><span class="iconify" data-icon="lucide:cpu"></span></div>
+    <div class="node s n1"><span class="iconify" data-icon="lucide:shield" style="color:var(--violet)"></span></div>
+    <div class="node s n4"><span class="iconify" data-icon="lucide:box" style="color:var(--magenta)"></span></div>
+    <div class="node s n2"><span class="iconify" data-icon="lucide:cloud" style="color:var(--cyan)"></span></div>
+    <div class="node s n3"><span class="iconify" data-icon="lucide:database" style="color:var(--violet)"></span></div>
+    <div class="dotpulse" style="top:18%;left:35%"></div>
+    <div class="dotpulse" style="top:24%;left:66%"></div>
+    <div class="dotpulse" style="top:30%;left:80%"></div>
+  </div>
+
+  <div class="scrim"></div>
+
+  <div class="fg">
+    <span class="kicker"><span class="iconify" data-icon="lucide:sparkles"></span>Kicker / category</span>
+    <h1 class="head">Big cover headline that <span class="hl">spans a few lines</span> and lands hard</h1>
+    <div class="meta">
+      <div class="who"><span class="dot"></span>The Artificium</div>
+      <div class="tag">@edwinluther-t</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<!--
+  ARCHETYPE: carousel-slide (a SLIDE SYSTEM, not a one-shot infographic)
+  WHEN TO USE: a multi-slide LinkedIn carousel / document post. Render ONE slide
+  per pass; build a deck by setting data-slide per slide and re-rendering.
+  Distilled from a multi-slide "document post" carousel (numbered deck of slides).
+  SLIDE MODES — set on <body data-slide="...">:
+    "cover"     = title + page count + hero slot + two-stack thesis + next-cue.
+    "list"      = section title + callout box + 3 icon/heading/subtext rows + next-cue.
+    "statement" = section title + one large centered statement + next-cue.
+  Only the matching .slide block shows; edit that block's data.
+  THEME: dark-neon glass, sampled from 03.png (near-black bg, teal/green + gold
+  glow, glass panels). MATCHES the reference — not the amber house style.
+  HONEST LIMIT: the reference's glossy 3D icons + robot mascot need image-gen,
+  unavailable here. This uses CSS glass/glow + flat Lucide icons. For the 3D
+  look, drop supplied art into a .hero/.glassicon slot or use the skill's
+  prompt-recipe. Do NOT claim to render 3D art.
+  RENDER: chrome --headless=new --force-device-scale-factor=2 --window-size=1080,1350 ...
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+  /* ---- THEME: dark-neon glass (matches 03.png) ---- */
+  :root{
+    --bg:#06080a; --panel:#10151b; --panel2:#0c1117; --line:#1e2a33;
+    --ink:#eaf2f5; --muted:#90a3ad;
+    --teal:#37e0c4; --green:#7CFFB2; --gold:#f4c14b;
+    --w:1080px; --h:1350px;
+  }
+  *{margin:0;box-sizing:border-box}
+  html,body{width:var(--w);height:var(--h)}
+  body{color:var(--ink);font-family:"Inter",sans-serif;overflow:hidden;
+    background:
+      radial-gradient(60% 40% at 22% 18%, #0c3b3522 0%, transparent 60%),
+      radial-gradient(60% 45% at 80% 80%, #3a2e0a22 0%, transparent 60%),
+      var(--bg);}
+  .wrap{height:100%;display:flex;flex-direction:column;padding:84px 76px;position:relative}
+
+  /* shared bits */
+  .kicker{font-family:"Sora",sans-serif;font-weight:700;font-size:22px;
+    letter-spacing:.02em;color:var(--green);display:flex;align-items:center;gap:12px}
+  .kicker::before{content:"";width:34px;height:3px;border-radius:2px;background:var(--green);
+    box-shadow:0 0 14px var(--green)}
+  .glass{background:linear-gradient(180deg,#141c24,#0c1218);
+    border:1px solid var(--line);border-radius:20px;
+    box-shadow:inset 0 1px 0 #ffffff0d, 0 20px 50px #0008}
+  .nextcue{margin-top:auto;display:inline-flex;align-self:flex-start;align-items:center;
+    gap:12px;font-family:"Sora",sans-serif;font-weight:700;font-size:24px;color:var(--ink);
+    padding:18px 26px;border-radius:14px;
+    background:linear-gradient(180deg,#15201d,#0c1411);border:1px solid #28433a}
+  .nextcue b{color:var(--gold)} .nextcue .iconify{color:var(--teal);font-size:26px}
+  .count{position:absolute;top:84px;right:76px;font-family:"Sora",sans-serif;
+    font-weight:700;font-size:18px;color:var(--muted)}
+  .count b{color:var(--teal)}
+  .foot{position:absolute;left:76px;right:76px;bottom:36px;display:flex;
+    justify-content:space-between;align-items:center;color:#5d6e77;font-size:16px}
+  .foot b{color:var(--muted)}
+
+  .slide{display:none;flex:1;flex-direction:column}
+  body[data-slide="cover"] .s-cover{display:flex}
+  body[data-slide="list"] .s-list{display:flex}
+  body[data-slide="statement"] .s-statement{display:flex}
+
+  /* ---- COVER ---- */
+  .s-cover .title{font-family:"Sora",sans-serif;font-weight:800;font-size:66px;
+    line-height:1.04;letter-spacing:-.02em;margin-top:10px}
+  .s-cover .pages{color:var(--gold);font-weight:700;white-space:nowrap}
+  .hero{margin:30px 0;height:230px;border-radius:20px;display:grid;place-items:center;
+    background:radial-gradient(circle at 50% 40%, #0e3a3322, transparent 70%);}
+  .hero .iconify{font-size:150px;color:var(--teal);filter:drop-shadow(0 0 30px #37e0c455)}
+  .hero img{height:100%;border-radius:18px}
+  .stack{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .stbox{width:100%;text-align:center;padding:26px;font-family:"Sora",sans-serif;
+    font-weight:800;font-size:34px;color:var(--green)}
+  .stbox.alt{color:var(--green)}
+  .arrowdn{font-size:40px;color:var(--gold);filter:drop-shadow(0 0 12px #f4c14b66)}
+  .thesis{color:var(--muted);font-size:22px;line-height:1.5;margin:24px 0 0}
+  .thesis b{color:var(--gold)}
+
+  /* ---- LIST ---- */
+  .s-list .sectitle{font-family:"Sora",sans-serif;font-weight:800;font-size:54px;
+    color:var(--green);margin-top:10px;text-shadow:0 0 26px #7cffb233}
+  .callout{margin:26px 0 8px;padding:28px 30px;text-align:center;
+    font-family:"Sora",sans-serif;font-weight:700;font-size:28px;line-height:1.35}
+  .rows{display:flex;flex-direction:column;gap:18px;margin-top:14px}
+  .lrow{display:flex;gap:22px;align-items:center;padding:24px 26px}
+  .lrow .ic{flex:none;width:78px;height:78px;border-radius:16px;display:grid;place-items:center;
+    background:radial-gradient(circle at 40% 30%, #143b3522, #0c1117);border:1px solid var(--line)}
+  .lrow .ic .iconify{font-size:40px;color:var(--teal);filter:drop-shadow(0 0 14px #37e0c455)}
+  .lrow h3{font-family:"Sora",sans-serif;font-weight:800;font-size:27px;color:var(--gold)}
+  .lrow p{color:var(--muted);font-size:19px;line-height:1.35;margin-top:4px}
+
+  /* ---- STATEMENT ---- */
+  .s-statement{justify-content:center}
+  .s-statement .sectitle{font-family:"Sora",sans-serif;font-weight:700;font-size:30px;
+    color:var(--teal);letter-spacing:.04em;text-transform:uppercase}
+  .s-statement .big{font-family:"Sora",sans-serif;font-weight:800;font-size:64px;
+    line-height:1.12;margin-top:20px;max-width:18ch}
+  .s-statement .big b{color:var(--green)}
+</style>
+</head>
+<!-- set the slide mode: "cover" | "list" | "statement" -->
+<body data-slide="cover">
+  <div class="wrap">
+    <div class="count">Page <b>01</b> / 06</div>
+
+    <!-- ============ COVER ============ -->
+    <div class="slide s-cover">
+      <div class="kicker">Topic label</div>
+      <div class="title">Carousel title <span class="pages">· N pages</span></div>
+      <div class="hero">
+        <!-- swap .iconify for <img src="..."> to use supplied hero art -->
+        <span class="iconify" data-icon="lucide:sparkles"></span>
+      </div>
+      <div class="stack">
+        <div class="glass stbox">First state / claim</div>
+        <div class="arrowdn iconify" data-icon="lucide:arrow-down"></div>
+        <div class="glass stbox alt">Second state / claim</div>
+      </div>
+      <div class="thesis"><b>Key term</b> — one or two lines stating the core thesis of the whole deck.</div>
+      <div class="nextcue">Next section <span class="iconify" data-icon="lucide:arrow-right"></span></div>
+    </div>
+
+    <!-- ============ LIST ============ -->
+    <div class="slide s-list">
+      <div class="kicker">02 · Section</div>
+      <div class="sectitle">Section title</div>
+      <div class="glass callout">One-sentence callout that frames the points below.</div>
+      <div class="rows">
+        <div class="glass lrow"><div class="ic"><span class="iconify" data-icon="lucide:settings-2"></span></div>
+          <div><h3>Point one</h3><p>One supporting line of detail.</p></div></div>
+        <div class="glass lrow"><div class="ic"><span class="iconify" data-icon="lucide:rocket"></span></div>
+          <div><h3>Point two</h3><p>One supporting line of detail.</p></div></div>
+        <div class="glass lrow"><div class="ic"><span class="iconify" data-icon="lucide:triangle-alert"></span></div>
+          <div><h3>Point three</h3><p>One supporting line of detail.</p></div></div>
+      </div>
+      <div class="nextcue">Next section <span class="iconify" data-icon="lucide:arrow-right"></span></div>
+    </div>
+
+    <!-- ============ STATEMENT ============ -->
+    <div class="slide s-statement">
+      <div class="kicker">03 · Section</div>
+      <div class="sectitle">Section title</div>
+      <div class="big">One punchy statement with an <b>emphasis</b> word or <b>two</b>.</div>
+      <div class="nextcue">Next section <span class="iconify" data-icon="lucide:arrow-right"></span></div>
+    </div>
+
+    <div class="foot"><span>The Artificium</span><span><b>@edwinluther-t</b></span></div>
+  </div>
+</body>
+</html>

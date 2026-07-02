@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<!--
+  ARCHETYPE: whiteboard-sketch
+  WHEN TO USE: a dense, "sketchnote on paper" explainer that covers a whole
+  topic in one poster: a marker title + tagline, a 3-column annotated band
+  (e.g. Challenge / Approach / Stack), then optional supporting bands — a
+  checklist + a small metrics table, an icon-stat results row, and a callout
+  "key learning". Pick the bands you need; each is independently toggleable.
+  Distilled from a hand-drawn marker whiteboard explainer poster.
+  WHAT MAKES IT DISTINCT (why it's its own archetype, not a comparison-columns
+  restyle): the value is the MEDIUM — handwriting type, paper-grid background,
+  rough sketchy borders, marker-tinted flat icons. No other template produces
+  this skin via a var swap; that skin is the point.
+  DIFFERS FROM comparison-columns: that = clean side-by-side combining
+  components with checklists + Output boxes. This = a full hand-drawn poster
+  with multiple heterogeneous bands in a whiteboard aesthetic.
+  DIFFERS FROM cheatsheet-grid: that = a uniform grid of equal tip cards.
+  This = heterogeneous stacked sections (columns + table + stats + callout).
+  ICONS: hand-drawn line icons from the Iconify "streamline-freehand" set
+  (data-icon="streamline-freehand:NAME"), tinted with the section marker color —
+  chosen over Lucide because their wobbly stroke matches the marker medium.
+  Names there are verbose/inconsistent; verify a name resolves before swapping
+  (https://api.iconify.design/streamline-freehand.json?icons=NAME).
+  ART LIMIT: this is a CSS approximation of marker-on-paper (handwriting font,
+  rough borders, paper grid, freehand line icons). It is NOT true hand-drawn
+  artwork or 3D doodle icons — that needs an external illustration/image tool.
+  Band toggles: add/remove the <section> blocks; the layout reflows.
+  DEFAULT THEME: ink-blue on warm paper, multi-marker accents (matches source).
+  RENDER: chrome --headless=new --force-device-scale-factor=2 --window-size=1080,1480 ...
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Architects+Daughter&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+  /* ---- PALETTE: ink-on-paper marker (matches source whiteboard poster) ---- */
+  :root{
+    --paper:#fbfaf5; --paper2:#f3f1e7; --grid:#e7e3d4;
+    --ink:#1f2a4a; --muted:#5a5f70; --line:#c9c4b2;
+    /* marker accents */
+    --m-blue:#2f5fd0; --m-purple:#7c3aed; --m-green:#1f9e57;
+    --m-amber:#e0922f; --m-red:#d8483f; --m-teal:#0f8f88;
+    --w:1080px; --h:1480px;
+  }
+  *{margin:0;box-sizing:border-box}
+  html,body{width:var(--w);height:var(--h)}
+  body{
+    background:
+      linear-gradient(var(--grid) 1px,transparent 1px) 0 0/100% 40px,
+      linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/40px 100%,
+      var(--paper);
+    color:var(--ink);font-family:"Inter",sans-serif;overflow:hidden}
+  .wrap{height:100%;display:flex;flex-direction:column;padding:54px 56px 46px}
+
+  /* hand-lettered display + handwriting body for the sketchnote feel */
+  .hand{font-family:"Caveat",cursive}
+  .note{font-family:"Architects Daughter",cursive}
+
+  /* sketchy rough border: double offset + slight rotation reads "drawn" */
+  .sketch{border:2.5px solid var(--ink);border-radius:14px;position:relative;background:rgba(255,255,255,.45)}
+  .sketch::after{content:"";position:absolute;inset:4px;border:1.5px solid var(--ink);
+    border-radius:11px;opacity:.25;pointer-events:none}
+
+  /* ---- title band ---- */
+  .title{font-family:"Caveat",cursive;font-weight:700;font-size:84px;line-height:.95;
+    text-align:center;letter-spacing:.01em}
+  .title .a{color:var(--m-blue)}.title .b{color:var(--m-purple)}.title .c{color:var(--m-teal)}
+  .title .plus{color:#9aa0b4}
+  .tag{font-family:"Architects Daughter",cursive;font-size:30px;text-align:center;
+    color:var(--ink);margin-top:6px}
+  .rule{height:3px;background:var(--ink);opacity:.7;border-radius:3px;margin:22px 0 6px;
+    -webkit-mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+
+  /* ---- 3-column annotated band ---- */
+  .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:26px}
+  .col h2{font-family:"Caveat",cursive;font-weight:700;font-size:38px;margin-bottom:12px}
+  .col.c1 h2{color:var(--m-blue)} .col.c2 h2{color:var(--m-purple)} .col.c3 h2{color:var(--m-teal)}
+  .col p{font-family:"Architects Daughter",cursive;font-size:21px;line-height:1.4;color:var(--ink)}
+  .col ul{list-style:none;margin-top:6px}
+  .col li{display:flex;gap:11px;align-items:flex-start;font-family:"Architects Daughter",cursive;
+    font-size:21px;line-height:1.35;margin-bottom:13px}
+  .col li .ic{font-size:26px;flex:none;margin-top:1px}
+  .c1 li .ic{color:var(--m-blue)} .c2 li .ic{color:var(--m-purple)} .c3 li .ic{color:var(--m-teal)}
+  .flow li{align-items:center}
+
+  /* ---- supporting band: checklist + mini table side by side ---- */
+  .mid{flex:1;display:grid;grid-template-columns:1.05fr 1fr;gap:30px;margin-top:30px;align-items:stretch}
+  .panel{padding:24px 26px;display:flex;flex-direction:column}
+  .panel h3{font-family:"Caveat",cursive;font-weight:700;font-size:34px;color:var(--m-green);margin-bottom:14px}
+  .panel.t h3{color:var(--m-blue)}
+  .check{list-style:none;flex:1}
+  .check li{display:flex;gap:11px;align-items:flex-start;font-family:"Architects Daughter",cursive;
+    font-size:21px;line-height:1.3;margin-bottom:14px}
+  .check li .ic{color:var(--m-green);font-size:25px;flex:none;margin-top:1px}
+  table{border-collapse:collapse;width:100%;font-family:"Architects Daughter",cursive}
+  th,td{border:1.5px solid var(--line);padding:9px 10px;font-size:18px;text-align:center;color:var(--ink)}
+  th{font-size:16px;color:var(--muted);text-transform:uppercase;letter-spacing:.02em}
+  td:first-child,th:first-child{text-align:left}
+  td.up{color:var(--m-green);font-weight:600}
+
+  /* ---- results row: icon stats ---- */
+  .results{margin-top:30px}
+  .results h3{font-family:"Caveat",cursive;font-weight:700;font-size:34px;color:var(--m-purple);margin-bottom:16px}
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;text-align:center}
+  .stat .ic{font-size:44px}
+  .stat:nth-child(1) .ic{color:var(--m-green)} .stat:nth-child(2) .ic{color:var(--m-amber)}
+  .stat:nth-child(3) .ic{color:var(--m-blue)} .stat:nth-child(4) .ic{color:var(--m-purple)}
+  .stat:nth-child(5) .ic{color:var(--m-red)}
+  .stat .lbl{font-family:"Architects Daughter",cursive;font-size:19px;line-height:1.3;margin-top:8px;color:var(--ink)}
+
+  /* ---- callout band ---- */
+  .callout{margin-top:30px;display:grid;grid-template-columns:.85fr 1.15fr;gap:26px;align-items:center}
+  .callout .big{font-family:"Caveat",cursive;font-weight:700;font-size:34px;line-height:1.1;
+    padding:22px 24px;text-align:center}
+  .callout .big b{color:var(--m-purple)} .callout .big .v{color:var(--m-blue)}
+  .callout .msg{font-family:"Architects Daughter",cursive;font-size:22px;line-height:1.45;
+    padding:22px 24px;color:var(--ink)}
+
+  .foot{display:flex;justify-content:space-between;align-items:center;color:var(--muted);
+    font-family:"Architects Daughter",cursive;font-size:20px;margin-top:auto;padding-top:22px}
+  .foot b{color:var(--ink)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- TITLE: multi-marker spans (.a/.b/.c), .plus separators -->
+    <div class="title">
+      <span class="a">Topic A</span> <span class="plus">+</span>
+      <span class="b">Topic B</span> <span class="plus">+</span>
+      <span class="c">Topic C</span>
+    </div>
+    <div class="tag">One-line tagline for the whole poster</div>
+    <div class="rule"></div>
+
+    <!-- BAND 1: three annotated columns (heterogeneous: prose / icon-flow / icon-list) -->
+    <section class="cols">
+      <div class="col c1">
+        <h2>Section one</h2>
+        <p>Two or three short hand-written lines setting up the problem this poster addresses.</p>
+        <ul class="flow">
+          <li><span class="ic iconify" data-icon="streamline-freehand:file-code"></span>Step one</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:programming-flowchart"></span>Step two</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:terminal"></span>Step three</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:form-validation-check-double"></span>Step four</li>
+        </ul>
+      </div>
+      <div class="col c2">
+        <h2>Section two</h2>
+        <p>A short line describing the approach or the middle idea.</p>
+        <ul>
+          <li><span class="ic iconify" data-icon="streamline-freehand:cleaning-robot-vacuum"></span>Point one — one clause</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:design-tool-magic-wand"></span>Point two — one clause</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:security-computer-shield"></span>Point three — one clause</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:archive-box"></span>Point four — one clause</li>
+        </ul>
+      </div>
+      <div class="col c3">
+        <h2>Section three</h2>
+        <ul>
+          <li><span class="ic iconify" data-icon="streamline-freehand:layers-stacked-1"></span>Item one</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:database"></span>Item two</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:lock-key-1"></span>Item three</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:business-workflow-merge-1"></span>Item four</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:app-window-source-code"></span>Item five</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- BAND 2: checklist + mini metrics table (drop either panel if not needed) -->
+    <section class="mid">
+      <div class="panel sketch">
+        <h3>What this changes</h3>
+        <ul class="check">
+          <li><span class="ic iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>First concrete win</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Second concrete win</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Third concrete win</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Fourth concrete win</li>
+          <li><span class="ic iconify" data-icon="streamline-freehand:form-validation-check-square-1"></span>Fifth concrete win</li>
+        </ul>
+      </div>
+      <div class="panel t sketch">
+        <h3>By the numbers</h3>
+        <table>
+          <tr><th>Activity</th><th>Before</th><th>After</th><th>Δ</th></tr>
+          <tr><td>Row one</td><td>100%</td><td>70%</td><td class="up">20–30%</td></tr>
+          <tr><td>Row two</td><td>100%</td><td>50%</td><td class="up">40–60%</td></tr>
+          <tr><td>Row three</td><td>100%</td><td>45%</td><td class="up">50–60%</td></tr>
+          <tr><td>Row four</td><td>100%</td><td>25%</td><td class="up">70–80%</td></tr>
+          <tr><td>Row five</td><td>100%</td><td>15%</td><td class="up">80–90%</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- BAND 3: icon-stat results row (3–5 stats; set --stats grid count below) -->
+    <section class="results">
+      <h3>Overall results</h3>
+      <div class="stats">
+        <div class="stat"><span class="ic iconify" data-icon="streamline-freehand:analytics-board-graph-line"></span><div class="lbl">Outcome one</div></div>
+        <div class="stat"><span class="ic iconify" data-icon="streamline-freehand:time-clock-24-hrs-2"></span><div class="lbl">Outcome two</div></div>
+        <div class="stat"><span class="ic iconify" data-icon="streamline-freehand:database-check"></span><div class="lbl">Outcome three</div></div>
+        <div class="stat"><span class="ic iconify" data-icon="streamline-freehand:messages-people-person-bubble-square-2"></span><div class="lbl">Outcome four</div></div>
+        <div class="stat"><span class="ic iconify" data-icon="streamline-freehand:creativity-idea-bulb"></span><div class="lbl">Outcome five</div></div>
+      </div>
+    </section>
+
+    <!-- BAND 4: key-learning callout (a boxed mantra → a takeaway message) -->
+    <section class="callout">
+      <div class="big sketch">It is not<br><b>X vs Y</b>.<br>It is<br><span class="v">X + Y + Z</span>.</div>
+      <div class="msg sketch">One or two hand-written sentences stating the single takeaway the reader should leave with.</div>
+    </section>
+
+    <div class="foot"><span>The Artificium</span><span><b>@edwinluther-t</b></span></div>
+  </div>
+</body>
+</html>

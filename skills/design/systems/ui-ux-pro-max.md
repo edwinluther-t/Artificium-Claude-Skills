@@ -627,3 +627,51 @@ Scope notice: This checklist is for App UI (iOS/Android/React Native/Flutter).
 - [ ] Color is not the only indicator
 - [ ] Reduced motion and dynamic text size are supported without layout breakage
 - [ ] Accessibility traits/roles/states (selected, disabled, expanded) are announced correctly
+
+## Rendering & Theming Implementation
+
+How to make the visual design above real, and how to export a static mockup.
+
+### Theme with CSS variables (retheme = a few-line edit)
+
+Put a small palette block FIRST at `:root` and reference it everywhere; never
+hardcode colors in components. This is what makes light/dark and multi-brand
+theming cheap.
+
+```css
+:root { --bg:#ffffff; --panel:#f4f4f5; --line:#e4e4e7;
+        --ink:#18181b; --muted:#52525b; --accent:#2563eb; }
+[data-theme="dark"] { --bg:#0a0a0b; --panel:#141416; --line:#26262b;
+        --ink:#f4f4f5; --muted:#a1a1aa; --accent:#f5a623; }
+```
+
+Dark mode becomes a second var set toggled on `<body data-theme="dark">`. Chart
+colors, borders, and icon tints all read from vars, so nothing needs per-component
+dark overrides. Keep body contrast ≥ 4.5:1 in both themes.
+
+### Icons via Iconify CDN — verify names
+
+Thousands of open-source icons, no bundled assets:
+`<span class="iconify" data-icon="lucide:settings"></span>` after loading
+`https://code.iconify.design/3/3.1.1/iconify.min.js`. Match the set to the
+medium (flat UI → `lucide`/`iconoir`; hand-drawn → `streamline-freehand`). A
+wrong icon name renders as a SILENT blank gap — validate before use:
+`curl -s "https://api.iconify.design/lucide.json?icons=a,b,c"` → `not_found: []`.
+
+### Dashboard / app-shell layout
+
+Compose from regions, each themed by the vars: a top bar (`56–64px`,
+brand/title/actions), a left nav rail (`220–260px` or a `64px` icon rail, active
+item uses `--accent`), a `flex:1` content region (`overflow:auto`, grid of themed
+cards), an optional thin footer. Shell: `body{display:flex}` → nav + a
+`flex:1;flex-direction:column` column → `main{flex:1}` → footer.
+
+### Export a static mockup (HTML/CSS → PNG)
+
+To hand off a pixel mockup, render with headless Chrome — build the `file://` URI
+with Python `pathlib.as_uri()` (a raw `file://$(pwd)` can silently capture
+Chrome's error page — tell: a tiny PNG), use `--headless=new --user-data-dir=…
+--force-device-scale-factor=2` and a `--window-size` matching the design's
+`--w/--h`, then **open the PNG and verify** before delivering. No image-gen model
+is assumed; for photoreal/3D hero art, leave an image slot + a prompt-recipe
+rather than faking it.

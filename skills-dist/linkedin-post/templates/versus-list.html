@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<!--
+  ARCHETYPE: versus-list
+  WHEN TO USE: two PEER concepts compared across a matched list of attributes.
+  Both sides are valid and get equal weight; each side is a stack of
+  icon -> label rows. A "X vs Y" header contrasts the two terms.
+  Distilled from an "A vs B" comparison infographic (two peer concepts, matched lists).
+  DIFFERS FROM:
+    - before-after  = old PROCESS vs new PROCESS (one is worse). versus-list = peers.
+    - think-vs-reality = belief vs fact, ONE statement each. versus-list = lists.
+  CENTER ZONE — two theme modes (toggle by setting <body data-center="...">):
+    data-center="divider" (default) = clean vertical rule + "VS" badge. Renders
+        fully here, no external art.
+    data-center="image" = a centered slot for a supplied illustration/photo.
+        This environment CANNOT generate that art (HTML->PNG only); drop a file
+        into the .slot <img src> or use the prompt-recipe in the skill .md.
+  DEFAULT THEME: soft light purple/blue, sampled from 02.png. Rule: MATCH the
+  reference's palette/type, do not force house style.
+  RENDER: chrome --headless=new --force-device-scale-factor=2 --window-size=1080,1350 ...
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+  /* ---- PALETTE: soft light purple/blue (matches 02.png) ---- */
+  :root{
+    --bg:#f7f5ff; --panel:#ffffff; --line:#e7e3f7; --soft:#efeafd;
+    --ink:#2a2350; --muted:#6a6390;
+    --left:#4f46e5;   /* indigo  — column A */
+    --right:#9333ea;  /* violet  — column B */
+    --w:1080px; --h:1350px;
+  }
+  *{margin:0;box-sizing:border-box}
+  html,body{width:var(--w);height:var(--h)}
+  body{background:
+      radial-gradient(120% 80% at 18% 12%, #ece7ff 0%, transparent 45%),
+      radial-gradient(120% 80% at 82% 12%, #f3e7ff 0%, transparent 45%),
+      var(--bg);
+    color:var(--ink);font-family:"Inter",sans-serif;overflow:hidden}
+  .wrap{height:100%;display:flex;flex-direction:column;padding:70px 60px}
+
+  .head{text-align:center}
+  .title{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:64px;
+    line-height:1.0;letter-spacing:-.01em}
+  .title .l{color:var(--left)} .title .vs{color:var(--muted);font-weight:700}
+  .title .r{color:var(--right)}
+  .kick{color:var(--muted);font-size:22px;margin-top:12px}
+
+  .cols{flex:1;display:grid;grid-template-columns:1fr auto 1fr;gap:0;
+    align-items:stretch;margin-top:44px}
+  .col{padding:0 14px}
+  .col .cap{display:block;text-align:center;font-family:"Baloo 2",sans-serif;
+    font-weight:800;font-size:30px;color:#fff;border-radius:999px;padding:14px 0;
+    margin-bottom:8px}
+  .colL .cap{background:var(--left)} .colR .cap{background:var(--right)}
+  .col .sub{text-align:center;font-family:"Baloo 2",sans-serif;font-weight:700;
+    font-size:21px;margin-bottom:26px}
+  .colL .sub{color:var(--left)} .colR .sub{color:var(--right)}
+  .row{display:flex;gap:16px;align-items:center;padding:16px 6px;
+    border-bottom:1px dashed var(--line)}
+  .row:last-child{border-bottom:none}
+  .row .ic{flex:none;width:60px;height:60px;border-radius:16px;display:grid;
+    place-items:center;font-size:32px;background:var(--soft)}
+  .colL .row .ic{color:var(--left)} .colR .row .ic{color:var(--right)}
+  .row span.t{font-size:22px;line-height:1.25;color:var(--ink)}
+
+  /* center zone */
+  .center{width:170px;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;position:relative}
+  .center::before{content:"";position:absolute;top:0;bottom:0;width:2px;
+    background:linear-gradient(var(--line),transparent 8%,var(--line) 92%,transparent)}
+  .vsbadge{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;
+    background:#fff;border:3px solid var(--line);font-family:"Baloo 2",sans-serif;
+    font-weight:800;font-size:34px;color:var(--muted);
+    box-shadow:0 10px 30px #4f46e522;z-index:1}
+  body[data-center="image"] .vsbadge{display:none}
+  body[data-center="image"] .center::before{display:none}
+  .slot{display:none}
+  body[data-center="image"] .slot{display:block;width:320px;z-index:1}
+  body[data-center="image"] .center{width:340px}
+  .slot img{width:100%;border-radius:24px;display:block}
+  .slot .ph{width:100%;aspect-ratio:3/4;border-radius:24px;border:2px dashed var(--line);
+    background:var(--soft);display:grid;place-items:center;text-align:center;
+    color:var(--muted);font-size:16px;padding:20px}
+
+  .banner{margin-top:40px;text-align:center;font-family:"Baloo 2",sans-serif;
+    font-weight:700;font-size:24px;color:var(--ink);background:#fff8e6;
+    border:1px solid #f3e6b8;border-radius:16px;padding:20px 24px}
+  .banner b{color:var(--right)}
+  .foot{display:flex;justify-content:space-between;align-items:center;color:var(--muted);
+    font-size:17px;border-top:1px solid var(--line);padding-top:20px;margin-top:24px}
+  .foot b{color:var(--ink)}
+</style>
+</head>
+<!-- toggle center zone: data-center="divider" (default) or "image" -->
+<body data-center="divider">
+  <div class="wrap">
+    <div class="head">
+      <div class="title"><span class="l">Concept A</span> <span class="vs">vs</span> <span class="r">Concept B</span></div>
+      <div class="kick">One line on why both matter and how they relate.</div>
+    </div>
+
+    <div class="cols">
+      <div class="col colL">
+        <span class="cap">Concept A</span>
+        <div class="sub">One-line framing of side A</div>
+        <div class="row"><span class="ic iconify" data-icon="lucide:bot"></span><span class="t">Attribute one</span></div>
+        <div class="row"><span class="ic iconify" data-icon="lucide:code-2"></span><span class="t">Attribute two</span></div>
+        <div class="row"><span class="ic iconify" data-icon="lucide:crosshair"></span><span class="t">Attribute three</span></div>
+        <div class="row"><span class="ic iconify" data-icon="lucide:bandage"></span><span class="t">Attribute four</span></div>
+        <div class="row"><span class="ic iconify" data-icon="lucide:database"></span><span class="t">Attribute five</span></div>
+        <div class="row"><span class="ic iconify" data-icon="lucide:search"></span><span class="t">Attribute six</span></div>
+      </div>
+
+      <div class="center">
+        <div class="vsbadge">VS</div>
+        <div class="slot">
+          <!-- data-center="image": replace .ph with <img src="path-or-data-uri"> -->
+          <div class="ph">Drop a supplied illustration here (this environment renders HTML/CSS only — see prompt-recipe in the skill).</div>
+        </div>
+      </div>
+
+      <div class="col colR">
+        <span class="cap">Concept B</span>
+        <div class="sub">One-line framing of side B</div>
+        <div class="row"><span class="ic iconify" data-icon="lucide:brain"></span><span class="t">Attribute one</span></div>
+        <div class="row"><span class="ic iconify" data-icon="lucide:ghost"></span><span class="t">Attribute two</span></div>
+        <div class="row"><span class="ic iconify" data-icon="lucide:users"></span><span class="t">Attribute three</span></div>
+        <div class="row"><span class="ic iconify" data-icon="lucide:lock"></span><span class="t">Attribute four</span></div>
+        <div class="row"><span class="ic iconify" data-icon="lucide:repeat"></span><span class="t">Attribute five</span></div>
+        <div class="row"><span class="ic iconify" data-icon="lucide:shield-check"></span><span class="t">Attribute six</span></div>
+      </div>
+    </div>
+
+    <div class="banner">One-sentence payoff with the <b>key point</b> bolded.</div>
+    <div class="foot"><span>The Artificium</span><span><b>@edwinluther-t</b></span></div>
+  </div>
+</body>
+</html>

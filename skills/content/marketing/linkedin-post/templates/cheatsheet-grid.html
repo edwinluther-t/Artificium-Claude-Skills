@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--
+  ARCHETYPE: cheatsheet-grid
+  WHEN TO USE: a reference of many small equal items (commands, shortcuts, tips,
+  tools). 2x3 / 3x3 grid of tiles. High save-rate format.
+  RENDER: chrome --headless --force-device-scale-factor=2 --window-size=1080,1350 ...
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+  :root{--bg:#0a0a0b;--panel:#141416;--line:#26262b;--ink:#f4f4f5;--muted:#a1a1aa;--accent:#f5a623;--w:1080px;--h:1350px;}
+  *{margin:0;box-sizing:border-box}
+  html,body{width:var(--w);height:var(--h)}
+  body{background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;overflow:hidden;
+    background-image:radial-gradient(circle at 1px 1px,#ffffff0a 1px,transparent 0);background-size:32px 32px;}
+  .wrap{height:100%;display:flex;flex-direction:column;padding:80px 72px}
+  .eyebrow{font-family:"JetBrains Mono",monospace;color:var(--accent);letter-spacing:.18em;text-transform:uppercase;font-size:20px}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:58px;line-height:1.04;margin-top:14px;letter-spacing:-.02em;max-width:16ch}
+  .grid{flex:1;display:grid;grid-template-columns:repeat(2,1fr);grid-auto-rows:1fr;gap:22px;margin:52px 0}
+  .tile{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:28px 28px;display:flex;flex-direction:column}
+  .tile .ic{font-size:38px;color:var(--accent)}
+  .tile h3{font-family:"Space Grotesk",sans-serif;font-size:27px;margin:14px 0 8px}
+  .tile code{font-family:"JetBrains Mono",monospace;color:var(--accent);font-size:18px}
+  .tile p{color:var(--muted);font-size:19px;line-height:1.4;margin-top:6px}
+  .foot{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:18px;border-top:1px solid var(--line);padding-top:24px}
+  .foot b{color:var(--ink)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">// cheatsheet</div>
+    <h1>The reference worth saving</h1>
+    <div class="grid">
+      <div class="tile"><div class="ic iconify" data-icon="lucide:terminal"></div><h3>Item one</h3><code>cmd --flag</code><p>What it does.</p></div>
+      <div class="tile"><div class="ic iconify" data-icon="lucide:git-branch"></div><h3>Item two</h3><code>cmd --flag</code><p>What it does.</p></div>
+      <div class="tile"><div class="ic iconify" data-icon="lucide:search"></div><h3>Item three</h3><code>cmd --flag</code><p>What it does.</p></div>
+      <div class="tile"><div class="ic iconify" data-icon="lucide:zap"></div><h3>Item four</h3><code>cmd --flag</code><p>What it does.</p></div>
+      <div class="tile"><div class="ic iconify" data-icon="lucide:layers"></div><h3>Item five</h3><code>cmd --flag</code><p>What it does.</p></div>
+      <div class="tile"><div class="ic iconify" data-icon="lucide:shield"></div><h3>Item six</h3><code>cmd --flag</code><p>What it does.</p></div>
+    </div>
+    <div class="foot"><span>The Artificium</span><span><b>@edwinluther-t</b></span></div>
+  </div>
+</body>
+</html>

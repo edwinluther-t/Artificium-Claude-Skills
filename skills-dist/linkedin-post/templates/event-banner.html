@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ARCHETYPE: event-banner
+  WHEN TO USE: promoting an EVENT — a webinar, conference, summit, virtual
+    series, workshop, or launch. Logo → big event title → tagline → a meta line
+    (format · sessions / dates) → a CTA pill on the LEFT; a decorative curved
+    swoosh panel holding a cluster of circular icon badges + outlined info chips
+    on the RIGHT.
+  DIFFERS FROM: hiring-banner (a ROLE announcement — has a skills/expertise info
+    band + a single hero art slot; this has an event meta line + a multi-badge
+    icon cluster, no skills band). lead-magnet-promo (a DOWNLOAD driver — benefit
+    list + asset cover; this is an event with date/format meta). Not a diagram.
+  DATA MODES (on <body>):
+    data-badges="4|5|6"   filled icon-badge count in the cluster.
+    data-chips="3|2|0"    outlined info-chip count (LIVE / LEVEL / LABS style).
+    data-swoosh="on|off"  the curved right panel behind the cluster.
+  DEFAULT THEME: sky-blue with dark-circle badges, dark CTA pill,
+    Space Grotesk 700 / Inter.
+  RENDER: chrome --headless=new --window-size=1200,627 ... event-banner.html
+-->
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+:root{
+  /* ---- palette (sampled from a sky-blue event banner) ---- */
+  --bg:#5aa6e0; --swoosh:#7cbceb; --ink:#10141a; --ink-soft:#1c2733;
+  --white:#ffffff; --muted:#23425e;
+  --badge:#2e5277;            /* filled dark circle */
+  --badge-ink:#eaf3fb;        /* icon inside filled badge */
+  --chip-line:#ffffff; --chip-ink:#2e5277; --chip-bg:#ffffff;
+  --cta:#0f1620; --cta-ink:#ffffff;
+  --w:1200px; --h:627px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:var(--w);height:var(--h);font-family:Inter,sans-serif;
+  background:var(--bg);color:var(--ink);overflow:hidden}
+.wrap{position:relative;height:100%;display:grid;
+  grid-template-columns:1.05fr .95fr;align-items:center}
+
+/* curved swoosh panel behind the right cluster */
+.swoosh{position:absolute;top:0;right:0;width:62%;height:100%;
+  background:var(--swoosh);z-index:0;
+  clip-path:path('M 220 0 C 60 130 60 497 220 627 L 740 627 L 740 0 Z')}
+body[data-swoosh="off"] .swoosh{display:none}
+
+/* ---------- LEFT ---------- */
+.left{position:relative;z-index:2;padding:54px 0 54px 70px}
+.logo{display:flex;align-items:center;gap:14px;margin-bottom:30px}
+.logo .mark{width:42px;height:42px;color:var(--ink);flex:0 0 auto}
+.logo .mark .iconify{font-size:42px}
+.logo .name{font-family:Space Grotesk;font-weight:700;font-size:34px;
+  letter-spacing:-.5px;color:var(--ink)}
+.title{font-family:Space Grotesk;font-weight:700;font-size:74px;line-height:.96;
+  letter-spacing:-1.5px;color:var(--ink)}
+.title .l2{color:var(--white)}
+.tag{font-size:30px;font-weight:500;color:var(--ink-soft);margin-top:18px;
+  letter-spacing:-.3px}
+.meta{margin-top:26px;font-family:Space Grotesk;font-weight:700;font-size:30px;
+  line-height:1.25;color:var(--ink)}
+.meta .sub{font-weight:500;font-size:28px}
+.cta{margin-top:30px;display:inline-flex;align-items:center;gap:14px;
+  background:var(--cta);color:var(--cta-ink);font-weight:700;font-size:24px;
+  letter-spacing:.5px;padding:20px 36px;border-radius:40px;
+  box-shadow:0 12px 28px rgba(12,18,30,.3)}
+.cta .iconify{font-size:24px}
+
+/* ---------- RIGHT: icon-badge cluster ---------- */
+.right{position:relative;z-index:2;height:100%;display:flex;align-items:center;
+  justify-content:center;padding-right:48px}
+.cluster{display:grid;grid-template-columns:repeat(3,auto);gap:30px 28px;
+  align-items:center}
+.badge{width:118px;height:118px;border-radius:50%;display:grid;place-items:center;
+  text-align:center}
+.badge.fill{background:var(--badge);box-shadow:0 10px 24px rgba(20,45,80,.3)}
+.badge.fill .iconify{font-size:54px;color:var(--badge-ink)}
+.badge.chip{background:var(--chip-bg);box-shadow:0 8px 20px rgba(20,45,80,.22)}
+.badge.chip span{font-family:Space Grotesk;font-weight:700;font-size:19px;
+  line-height:1.1;color:var(--chip-ink);letter-spacing:.3px}
+.badge.chip span small{display:block;font-weight:700;font-size:19px}
+
+/* badge-count knob: cluster shows 6 filled + 3 chips by default (3x3) */
+body[data-badges="5"] .badge.fill:nth-of-type(n+6){display:none}
+body[data-badges="4"] .badge.fill:nth-of-type(n+5){display:none}
+body[data-chips="2"] .badge.chip:nth-of-type(n+3){display:none}
+body[data-chips="0"] .badge.chip{display:none}
+
+/* ---------- footer ---------- */
+.foot{position:absolute;left:70px;bottom:22px;right:48px;z-index:3;
+  display:flex;justify-content:space-between;font-size:15px;font-weight:600;
+  color:rgba(16,20,26,.6)}
+</style>
+</head>
+<body data-badges="6" data-chips="3" data-swoosh="on">
+  <div class="swoosh"></div>
+  <div class="wrap">
+    <!-- LEFT -->
+    <div class="left">
+      <div class="logo">
+        <span class="mark"><span class="iconify" data-icon="lucide:hexagon"></span></span>
+        <span class="name">brandmark</span>
+      </div>
+      <div class="title">EVENT<br><span class="l2">NAME</span></div>
+      <div class="tag">One-line event tagline here</div>
+      <div class="meta">Format  |  N Sessions<br><span class="sub">Date – Date</span></div>
+      <a class="cta">REGISTER NOW <span class="iconify" data-icon="lucide:arrow-right"></span></a>
+    </div>
+
+    <!-- RIGHT cluster -->
+    <div class="right">
+      <div class="cluster">
+        <div class="badge fill"><span class="iconify" data-icon="lucide:sparkles"></span></div>
+        <div class="badge fill"><span class="iconify" data-icon="lucide:share-2"></span></div>
+        <div class="badge chip"><span>LIVE &amp;<small>LOCAL</small></span></div>
+
+        <div class="badge fill"><span class="iconify" data-icon="lucide:code-xml"></span></div>
+        <div class="badge fill"><span class="iconify" data-icon="lucide:layers"></span></div>
+        <div class="badge chip"><span>LEVEL<small>100–300</small></span></div>
+
+        <div class="badge fill"><span class="iconify" data-icon="lucide:graduation-cap"></span></div>
+        <div class="badge fill"><span class="iconify" data-icon="lucide:bar-chart-3"></span></div>
+        <div class="badge chip"><span>LABS</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><span>The Artificium</span><span>@edwinluther-t</span></div>
+</body>
+</html>

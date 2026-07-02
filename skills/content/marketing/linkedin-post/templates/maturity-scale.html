@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!--
+  ARCHETYPE: maturity-scale
+  WHEN TO USE: place something on a progression (levels 1-5, crawl/walk/run,
+  novice->expert). A horizontal row of stages with one highlighted.
+  RENDER: chrome --headless --force-device-scale-factor=2 --window-size=1080,1350 ...
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+  :root{--bg:#0a0a0b;--panel:#141416;--line:#26262b;--ink:#f4f4f5;--muted:#a1a1aa;--accent:#f5a623;--w:1080px;--h:1350px;}
+  *{margin:0;box-sizing:border-box}
+  html,body{width:var(--w);height:var(--h)}
+  body{background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;overflow:hidden;
+    background-image:radial-gradient(circle at 1px 1px,#ffffff0a 1px,transparent 0);background-size:32px 32px;}
+  .wrap{height:100%;display:flex;flex-direction:column;padding:80px 72px}
+  .eyebrow{font-family:"JetBrains Mono",monospace;color:var(--accent);letter-spacing:.18em;text-transform:uppercase;font-size:20px}
+  h1{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:58px;line-height:1.04;margin-top:14px;letter-spacing:-.02em;max-width:16ch}
+  .scale{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;margin:48px 0}
+  .track{display:flex;align-items:flex-end;gap:14px;height:60px}
+  .bar{flex:1;border-radius:10px 10px 0 0;background:#1d1d22;border:1px solid var(--line);border-bottom:none}
+  .bar:nth-child(1){height:30%}.bar:nth-child(2){height:48%}.bar:nth-child(3){height:66%}
+  .bar:nth-child(4){height:84%}.bar:nth-child(5){height:100%;background:var(--accent);border-color:var(--accent)}
+  .rows{display:flex;gap:14px}
+  .lvl{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 20px}
+  .lvl.on{border-color:var(--accent);background:linear-gradient(180deg,#1a1408,#141416)}
+  .lvl .n{font-family:"JetBrains Mono",monospace;color:var(--accent);font-size:16px;letter-spacing:.1em}
+  .lvl h3{font-family:"Space Grotesk",sans-serif;font-size:24px;margin:8px 0 6px}
+  .lvl p{color:var(--muted);font-size:17px;line-height:1.35}
+  .foot{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:18px;border-top:1px solid var(--line);padding-top:24px}
+  .foot b{color:var(--ink)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">// maturity scale</div>
+    <h1>Where do you sit on the curve?</h1>
+    <div class="scale">
+      <div class="track"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+      <div class="rows">
+        <div class="lvl"><div class="n">L1</div><h3>Ad hoc</h3><p>No system.</p></div>
+        <div class="lvl"><div class="n">L2</div><h3>Repeatable</h3><p>Some patterns.</p></div>
+        <div class="lvl"><div class="n">L3</div><h3>Defined</h3><p>Documented.</p></div>
+        <div class="lvl"><div class="n">L4</div><h3>Managed</h3><p>Measured.</p></div>
+        <div class="lvl on"><div class="n">L5</div><h3>Optimizing</h3><p>Self-improving.</p></div>
+      </div>
+    </div>
+    <div class="foot"><span>The Artificium</span><span><b>@edwinluther-t</b></span></div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+  ARCHETYPE: chart-compare
+  WHEN TO USE: a two-up CHART comparison where the MESSAGE lives in the visual
+    difference between two charts — e.g. sparse/concentrated (bad) vs
+    dense/diversified (good), small vs large, before vs after as DATA. The charts
+    carry the argument, not text lists.
+  ANATOMY: logo lockup → big multi-line headline → two side-by-side chart panels
+    (LEFT = a sparse conic-gradient PIE; RIGHT = a dense radial BAR-FAN wheel),
+    each with a curved-ish caption + a one-line verdict → a pill CTA.
+  DIFFERS FROM: versus-list / think-vs-reality (TEXT/icon-LIST columns — this is
+    CHART-driven). before-after (process panels, not data charts).
+  CHARTS ARE REAL CSS: the pie is a conic-gradient; the wheel is CSS bars placed
+    radially (rotate + translate) with varying heights. Flat 2D (honest) — the
+    source's photoreal 3D renders are NOT reproduced.
+  DATA MODES (on <body>):
+    data-slices-l="3|4|5"   left pie slice count (sparse side).
+    data-cta="on|off"       the bottom CTA pill.
+  DEFAULT THEME: light silver-grey, red accent, multi-hue charts, Poppins 800 /
+    Inter. SQUARE 1080×1080.
+  RENDER: chrome --headless=new --window-size=1080,1080 ... chart-compare.html
+-->
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+:root{
+  /* ---- palette (sampled from a silver-grey finance comparison poster) ---- */
+  --bg:#e9e9eb; --bg2:#dededf; --ink:#171717; --muted:#5a5a5e; --line:#cfcfd2;
+  --red:#d92027; --panel:#f3f3f4;
+  /* sparse pie accents */
+  --p1:#5bbf2a; --p2:#e8821e; --p3:#f0c419; --p4:#7a9e1f;
+  /* dense wheel spectrum */
+  --w1:#5bbf2a; --w2:#e8821e; --w3:#f0c419; --w4:#3f8ddb; --w5:#d92027;
+  --w6:#2f7d4f; --w7:#b8862f; --w8:#6b4ea8;
+  --w:1080px; --h:1080px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:var(--w);height:var(--h);font-family:Inter,sans-serif;
+  background:radial-gradient(120% 100% at 50% 0%,var(--bg),var(--bg2));
+  color:var(--ink);overflow:hidden}
+.wrap{height:100%;display:flex;flex-direction:column;padding:44px 56px 40px}
+
+/* logo */
+.logo{display:flex;align-items:center;gap:13px;justify-content:center;
+  margin-bottom:18px}
+.logo .mk{width:46px;height:46px;border-radius:50%;
+  background:conic-gradient(var(--red) 0 60%,var(--p3) 60% 100%);
+  display:grid;place-items:center;color:#fff;font-family:Poppins;font-weight:800;
+  font-size:24px}
+.logo .nm{font-family:Poppins;font-weight:800;font-size:34px;color:var(--ink);
+  letter-spacing:-.5px}
+.logo .nm b{color:var(--red)}
+
+/* headline */
+.head{font-family:Poppins;font-weight:800;font-size:62px;line-height:.98;
+  letter-spacing:-1px;margin:4px 0 12px}
+.head .red{color:var(--red)}
+
+/* two chart panels */
+.charts{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:26px;min-height:0;
+  align-items:center}
+.panel{height:100%;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:14px}
+.stage{position:relative;width:330px;height:330px;display:grid;place-items:center}
+.cap{font-family:Poppins;font-weight:700;font-size:26px;color:var(--red)}
+.verdict{font-family:Poppins;font-weight:700;font-size:23px;color:var(--ink);
+  text-align:center;display:flex;align-items:center;gap:8px}
+.verdict .iconify{font-size:24px}
+.verdict.bad .iconify{color:var(--red)}
+.verdict.good .iconify{color:var(--p1)}
+
+/* hub (shared) */
+.hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:104px;height:104px;border-radius:50%;background:#e7e4dc;
+  border:6px solid #d2cec3;box-shadow:0 6px 16px rgba(0,0,0,.18);z-index:3}
+
+/* ---- LEFT: sparse conic PIE ---- */
+.pie{width:300px;height:300px;border-radius:50%;
+  box-shadow:0 14px 30px rgba(0,0,0,.22);
+  background:conic-gradient(
+    var(--p1) 0 50%,
+    var(--p2) 50% 70%,
+    var(--p3) 70% 88%,
+    var(--p4) 88% 100%)}
+body[data-slices-l="3"] .pie{background:conic-gradient(
+    var(--p1) 0 55%, var(--p2) 55% 80%, var(--p3) 80% 100%)}
+body[data-slices-l="5"] .pie{background:conic-gradient(
+    var(--p1) 0 42%, var(--p2) 42% 64%, var(--p3) 64% 80%,
+    var(--p4) 80% 92%, var(--red) 92% 100%)}
+.plabels{position:absolute;inset:0;z-index:2}
+.plabels span{position:absolute;font-weight:700;font-size:16px;color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,.4)}
+.pl1{top:42%;left:20%}.pl2{top:30%;right:20%}.pl3{top:60%;right:22%}.pl4{top:70%;left:30%}
+
+/* ---- RIGHT: dense radial BAR-FAN wheel ---- */
+.wheel{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:0;height:0;z-index:1}
+.bar{position:absolute;left:-13px;bottom:0;width:26px;border-radius:6px 6px 0 0;
+  transform-origin:50% 100%;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+/* bottom edge pins to the wheel-center point; rotate fans it out, height
+   carries it past the hub disc. --len set inline. */
+
+/* CTA */
+.cta{align-self:center;margin-top:6px;display:inline-flex;align-items:center;gap:12px;
+  background:var(--red);color:#fff;font-family:Poppins;font-weight:700;font-size:28px;
+  padding:18px 44px;border-radius:40px;box-shadow:0 10px 24px rgba(217,32,39,.35)}
+.cta .iconify{font-size:26px}
+body[data-cta="off"] .cta{display:none}
+
+.foot{display:flex;justify-content:space-between;font-size:14px;font-weight:600;
+  color:var(--muted);margin-top:14px;padding:0 2px}
+</style>
+</head>
+<body data-slices-l="4" data-cta="on">
+  <div class="wrap">
+    <div class="logo">
+      <span class="mk">b</span>
+      <span class="nm">Brand<b>Mark</b></span>
+    </div>
+
+    <div class="head">Your headline<br>lands in <span class="red">three lines</span></div>
+
+    <div class="charts">
+      <!-- LEFT sparse pie -->
+      <div class="panel">
+        <div class="stage">
+          <div class="pie"></div>
+          <div class="plabels">
+            <span class="pl1">Item A</span><span class="pl2">Item B</span>
+            <span class="pl3">Item C</span><span class="pl4">Item D</span>
+          </div>
+          <div class="hub"></div>
+        </div>
+        <div class="cap">Sparse Option</div>
+        <div class="verdict bad"><span class="iconify" data-icon="lucide:trending-down"></span>Concentrated, high risk</div>
+      </div>
+
+      <!-- RIGHT dense wheel -->
+      <div class="panel">
+        <div class="stage">
+          <div class="wheel" id="wheel"></div>
+          <div class="hub"></div>
+        </div>
+        <div class="cap">Diversified Option</div>
+        <div class="verdict good"><span class="iconify" data-icon="lucide:trending-up"></span>Balanced, safer growth</div>
+      </div>
+    </div>
+
+    <a class="cta">Your CTA Goes Here <span class="iconify" data-icon="lucide:arrow-right"></span></a>
+
+    <div class="foot"><span>The Artificium</span><span>@edwinluther-t</span></div>
+  </div>
+
+  <script>
+    // Build the dense radial bar-fan: N bars around the hub, varying heights.
+    var W=document.getElementById('wheel');
+    var cols=['--w1','--w2','--w3','--w4','--w5','--w6','--w7','--w8'];
+    var N=14, hub=52;                       // hub radius (inner, hidden under disc)
+    var lens=[64,40,56,34,72,44,60,36,68,42,58,32,50,46];
+    for(var i=0;i<N;i++){
+      var a=(360/N)*i;
+      var len=lens[i%lens.length];
+      var b=document.createElement('div');
+      b.className='bar';
+      b.style.height=(hub+len)+'px';       // bottom pinned at center; extends out
+      b.style.transform='rotate('+a+'deg)';
+      b.style.background='var('+cols[i%cols.length]+')';
+      W.appendChild(b);
+    }
+  </script>
+</body>
+</html>

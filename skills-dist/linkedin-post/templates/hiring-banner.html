@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!--
+  ARCHETYPE: hiring-banner (recruitment / open-role / announcement banner)
+  WHEN TO USE: announce an open role, a "we're hiring", a "join us", or any
+  role+skills+CTA recruitment post. The structure is: a HERO top band (a small
+  badge chip + a BIG role title + one tagline on the left, a hero ART zone on
+  the right) sitting over a bottom INFO band split into three zones — a primary
+  skill checklist column, a secondary expertise column, and a value-prop callout
+  that ends in a "DM me / interested?" CTA chip. Distilled from a dark-navy
+  "we're hiring" role poster.
+
+  THE HERO BAND IS THE STAR: badge → oversized 2-line role title → tagline, with
+  a large art zone on the right. The bottom band is the supporting detail grid.
+
+  DIFFERS FROM:
+    - architecture-map: a connected system diagram. This is an announcement, no
+      connectors — a headline + skill lists + CTA.
+    - comparison-columns / cheatsheet-grid: pure body lists with no hero headline
+      or CTA framing. This leads with a big role title and ends in a call-to-act.
+    - stat-banner: one hero metric. This is a role + multi-skill announcement.
+
+  HERO ART ZONE (data-hero on .hero):
+    "image" (DEFAULT, matches source) — the source's hero is a glossy 3D
+      illustration (cloud + product icons) that CANNOT be rendered here (no
+      image-gen). So the art zone DEFAULTS to an image slot: drop a PNG/SVG into
+      .art via background-image, OR generate one with the prompt-recipe in the
+      skill .md. The placeholder shows the intended region + a prompt hint.
+    "off" — collapse the art zone, hero title goes full-width (text-only banner).
+  Do NOT substitute flat clip-art icons for the source's 3D illustration — match
+  the source by supplying real art into the slot.
+
+  SKILL ZONES (data-zones on .info): "3" all three (DEFAULT, matches source) |
+    "2" two skill columns, no callout | "1" one skill column + callout.
+
+  ICONS: flat Lucide for the small in-list check marks + CTA glyphs only (these
+  are UI chrome, not the hero art).
+  CONTENT: STRUCTURE ONLY — sources are scraped real LinkedIn posts; every label
+  is a NEUTRAL placeholder. Never ship the source's role names, stack names,
+  brand logos, or copy.
+
+  LANDSCAPE: 1200×750. RENDER: chrome --headless=new --force-device-scale-factor=2 --window-size=1200,750 ...
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+  /* ---- PALETTE: dark navy / electric blue, yellow badge accent (matches source) ---- */
+  :root{
+    --bg:#0a1838; --bg2:#0e2150; --panel:#0f2450; --panel2:#102a5e;
+    --line:#244183; --ink:#ffffff; --muted:#9db4e0;
+    --accent:#2f7bff;      /* electric blue */
+    --accent2:#56a4ff;     /* lighter blue highlight */
+    --badge:#f5c518;       /* yellow badge */
+    --green:#2fd07a;       /* check marks */
+    --w:1200px; --h:750px;
+  }
+  *{margin:0;box-sizing:border-box}
+  html,body{width:var(--w);height:var(--h)}
+  body{background:
+      radial-gradient(120% 90% at 80% 0%, #173370 0%, transparent 55%),
+      linear-gradient(160deg,#0a1838,#0a1430);
+    color:var(--ink);font-family:"Inter",sans-serif;overflow:hidden}
+  /* faint circuit grid */
+  body::before{content:"";position:fixed;inset:0;
+    background-image:linear-gradient(#5b8bff10 1px,transparent 1px),linear-gradient(90deg,#5b8bff10 1px,transparent 1px);
+    background-size:40px 40px;mask-image:radial-gradient(120% 120% at 70% 20%,#000 30%,transparent 75%)}
+  .wrap{position:relative;height:100%;display:flex;flex-direction:column;padding:34px 40px 24px}
+
+  /* ================= HERO BAND ================= */
+  .hero{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:center}
+  .hero[data-hero="off"]{grid-template-columns:1fr}
+  .hero[data-hero="off"] .art{display:none}
+
+  .badge{display:inline-flex;align-items:center;gap:8px;background:var(--badge);color:#10204a;
+    font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:16px;letter-spacing:.06em;
+    text-transform:uppercase;padding:7px 16px;border-radius:8px;box-shadow:0 6px 18px #f5c51833}
+  .badge .ic{font-size:18px}
+  .role{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:62px;line-height:.98;
+    letter-spacing:-.02em;margin-top:16px;text-transform:uppercase}
+  .role .hl{color:var(--accent2)}
+  .tag{font-size:18px;color:var(--muted);margin-top:14px;font-weight:500}
+
+  /* hero ART zone = image slot (default). Drop art via background-image on .art. */
+  .art{height:300px;border-radius:18px;border:1.5px dashed var(--line);
+    background:radial-gradient(80% 80% at 50% 35%,#16336e 0%,#0c1f47 70%);
+    background-size:cover;background-position:center;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    color:#6f8bc4;text-align:center;padding:18px;position:relative;overflow:hidden}
+  .art .glow{position:absolute;width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(circle,#2f7bff55,transparent 70%);filter:blur(6px)}
+  .art .ph-ic{font-size:54px;color:#3f74d8;position:relative}
+  .art .ph-tx{font-size:12px;letter-spacing:.04em;line-height:1.4;position:relative;max-width:240px}
+
+  /* ================= INFO BAND ================= */
+  .info{flex:1;display:grid;gap:18px;margin-top:24px;min-height:0;align-items:stretch}
+  .info[data-zones="3"]{grid-template-columns:1fr 1fr 1.15fr}
+  .info[data-zones="2"]{grid-template-columns:1fr 1fr}
+  .info[data-zones="1"]{grid-template-columns:1fr 1.15fr}
+  .info[data-zones="2"] .callout{display:none}
+  .info[data-zones="1"] .col.secondary{display:none}
+
+  .col{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);
+    border-radius:16px;padding:18px 20px;display:flex;flex-direction:column}
+  .col .ctitle{display:inline-flex;align-items:center;gap:9px;font-family:"Space Grotesk",sans-serif;
+    font-weight:600;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);
+    border-bottom:1px solid var(--line);padding-bottom:11px;margin-bottom:13px}
+  .col .ctitle .ic{font-size:18px}
+  .col ul{list-style:none;display:flex;flex-direction:column;gap:11px;flex:1}
+  .col li{display:flex;align-items:center;gap:11px;font-size:17px;font-weight:500;line-height:1.15}
+  .col li .ic{font-size:20px;flex:none;color:var(--accent2)}
+  /* secondary column uses green check chips (matches the source's checklist) */
+  .col.secondary li .ic{color:var(--green)}
+
+  /* value-prop callout + CTA */
+  .callout{background:linear-gradient(180deg,var(--panel),#0c1f49);border:1px solid var(--line);
+    border-radius:16px;padding:20px 22px;display:flex;flex-direction:column;justify-content:space-between}
+  .callout .punch{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:21px;line-height:1.3}
+  .callout .punch b{color:var(--accent2)}
+  .cta{display:flex;align-items:center;gap:13px;background:#0a1c44;border:1px solid var(--accent);
+    border-radius:12px;padding:13px 16px;margin-top:16px}
+  .cta .ci{width:42px;height:42px;flex:none;border-radius:10px;background:var(--accent);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px}
+  .cta .ct{display:flex;flex-direction:column}
+  .cta .ct b{font-family:"Space Grotesk",sans-serif;font-size:16px;letter-spacing:.04em}
+  .cta .ct span{font-size:14px;color:var(--muted)}
+
+  .foot{display:flex;justify-content:space-between;align-items:center;color:var(--muted);
+    font-size:14px;margin-top:16px}
+  .foot b{color:var(--ink)}
+</style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- ===== HERO BAND. data-hero: "image" (default, art slot) | "off" (text only) ===== -->
+    <div class="hero" data-hero="image">
+      <div class="copy">
+        <span class="badge"><span class="ic iconify" data-icon="lucide:megaphone"></span>We are hiring</span>
+        <div class="role">Open <span class="hl">Role</span><br>Title Here</div>
+        <div class="tag">One short tagline. The promise. The impact line.</div>
+      </div>
+      <!-- ART SLOT: set background-image on .art to drop real hero art (see skill .md
+           prompt-recipe). The placeholder marks the region; do NOT swap in clip-art. -->
+      <div class="art">
+        <div class="glow"></div>
+        <span class="ph-ic iconify" data-icon="lucide:image"></span>
+        <div class="ph-tx">Hero art slot — set <code>background-image</code> on <code>.art</code> (see prompt-recipe).</div>
+      </div>
+    </div>
+
+    <!-- ===== INFO BAND. data-zones: "3" (default) | "2" no callout | "1" one col + callout ===== -->
+    <div class="info" data-zones="3">
+
+      <div class="col primary">
+        <span class="ctitle"><span class="ic iconify" data-icon="lucide:star"></span>Core skills</span>
+        <ul>
+          <li><span class="ic iconify" data-icon="lucide:circle-dot"></span>Skill one</li>
+          <li><span class="ic iconify" data-icon="lucide:circle-dot"></span>Skill two</li>
+          <li><span class="ic iconify" data-icon="lucide:circle-dot"></span>Skill three</li>
+          <li><span class="ic iconify" data-icon="lucide:circle-dot"></span>Skill four</li>
+          <li><span class="ic iconify" data-icon="lucide:circle-dot"></span>Skill five</li>
+          <li><span class="ic iconify" data-icon="lucide:circle-dot"></span>Skill six</li>
+        </ul>
+      </div>
+
+      <div class="col secondary">
+        <span class="ctitle"><span class="ic iconify" data-icon="lucide:plus-circle"></span>Also nice</span>
+        <ul>
+          <li><span class="ic iconify" data-icon="lucide:check-circle-2"></span>Bonus one</li>
+          <li><span class="ic iconify" data-icon="lucide:check-circle-2"></span>Bonus two</li>
+          <li><span class="ic iconify" data-icon="lucide:check-circle-2"></span>Bonus three</li>
+          <li><span class="ic iconify" data-icon="lucide:check-circle-2"></span>Bonus four</li>
+        </ul>
+      </div>
+
+      <div class="callout">
+        <div class="punch">Work on <b>modern</b> problems.<br>Build <b>scalable</b> systems.<br>Drive <b>real impact</b>.</div>
+        <div class="cta">
+          <span class="ci iconify" data-icon="lucide:mail"></span>
+          <div class="ct"><b>INTERESTED?</b><span>DM me or share your resume.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER: placeholder kit mark — replace with the END-USER's brand/handle
+         (or delete this row) before delivering. See Layout rule #3 in the skill. -->
+    <div class="foot"><span>The Artificium</span><span><b>@edwinluther-t</b></span></div>
+  </div>
+</body>
+</html>

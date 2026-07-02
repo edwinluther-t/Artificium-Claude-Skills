@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<!--
+  ARCHETYPE: animated-flow-map (layered architecture diagram with ANIMATED flow dots)
+  WHEN TO USE: a dense top-down SYSTEM architecture shown as numbered horizontal
+  LAYERS (Ingress → Runtime → Execution → Safety → Observability …), where each
+  layer is a band of connected boxes and DATA FLOWS along the connectors as moving
+  dots. A left numbered TIER rail labels the layers; a right NUMBERED-TAKEAWAYS
+  rail summarizes; a social/handle footer sits at the bottom. Distilled from a
+  dense "enterprise system architecture" explainer poster.
+
+  THE MOTION IS THE POINT: connectors carry CSS-animated flow dots travelling
+  source→destination on a loop (`@keyframes flow`). The animation runs live in a
+  browser. This machine exports a STATIC PNG (one frame); a looping GIF is built
+  by capturing several phase-stepped frames and stitching with PIL (see skill .md
+  "Tuning animated-flow-map" — there is NO ffmpeg here; PIL assembles the GIF).
+  Animation phase is driven by `<body data-phase="0..N">` so each captured frame
+  freezes the dots at a different point along the path.
+
+  DIFFERS FROM:
+    - architecture-map: a STATIC connected diagram, no motion, icon-list rails.
+      This adds animated flow dots + a numbered-takeaways rail and is portrait-tall
+      for a dense 5-layer stack.
+    - layered-stack: solid ranked bands, no per-box connectors or flow.
+
+  ICONS: flat Lucide (flat-tech medium). CONTENT: STRUCTURE ONLY — source is a
+  scraped real LinkedIn post; every label/takeaway is a NEUTRAL placeholder. Never
+  ship the source's product names, layer names, copy, or social handles.
+  FOOTER: placeholder kit mark — replace the handles with the END-USER's (or
+  delete) before delivering. See Layout rule #3 in the skill.
+
+  PORTRAIT-TALL: 1080×1500. RENDER: chrome --headless=new --force-device-scale-factor=2 --window-size=1080,1500 ...
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+<style>
+  /* ---- PALETTE: clean light, multi-accent per layer (sampled from source) ---- */
+  :root{
+    --bg:#f7f8fb; --panel:#ffffff; --line:#e3e7f0; --ink:#1b2138; --muted:#5b6280;
+    --L1:#3b5bd9; --L2:#7c4dd6; --L3:#2f9e57; --L4:#e0822f; --L5:#3aa0c8;
+    --accent:#e0532a;   /* title/header accent (orange) */
+    --dot:#7c4dd6;      /* default flow-dot color */
+    --conn:#c7cfe2;
+    --w:1080px; --h:1500px;
+  }
+  *{margin:0;box-sizing:border-box}
+  html,body{width:var(--w);height:var(--h)}
+  body{background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif;overflow:hidden}
+  .wrap{height:100%;display:flex;flex-direction:column;padding:30px 34px 22px}
+
+  /* ---- title ---- */
+  .title{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:42px;text-align:center;
+    letter-spacing:-.015em;line-height:1.02}
+  .title .hl{color:var(--accent)}
+  .subpill{align-self:center;margin-top:12px;background:var(--L1);color:#fff;font-weight:700;
+    font-size:16px;letter-spacing:.04em;padding:7px 22px;border-radius:22px}
+
+  /* ---- body: left tier rail | center stack | right takeaways ---- */
+  .body{flex:1;display:grid;grid-template-columns:150px 1fr 250px;gap:16px;margin-top:18px;min-height:0}
+
+  /* left numbered tier rail */
+  .tiers{display:flex;flex-direction:column;gap:12px}
+  .tier-lab{flex:1;border-left:3px solid var(--c);padding:8px 4px 8px 12px;display:flex;flex-direction:column;gap:3px}
+  .tier-lab .tn{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:13px;color:var(--c);letter-spacing:.02em}
+  .tier-lab .tt{font-size:11px;color:var(--muted);line-height:1.3}
+  .tier-lab.t1{--c:var(--L1)} .tier-lab.t2{--c:var(--L2)} .tier-lab.t3{--c:var(--L3)}
+  .tier-lab.t4{--c:var(--L4)} .tier-lab.t5{--c:var(--L5)}
+
+  /* center stack of layer bands */
+  .stack{display:flex;flex-direction:column;gap:12px;min-width:0}
+  .layer{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:12px 14px;display:flex;flex-direction:column;min-height:0;position:relative}
+  .layer.l1{box-shadow:inset 4px 0 0 var(--L1)} .layer.l2{box-shadow:inset 4px 0 0 var(--L2)}
+  .layer.l3{box-shadow:inset 4px 0 0 var(--L3)} .layer.l4{box-shadow:inset 4px 0 0 var(--L4)}
+  .layer.l5{box-shadow:inset 4px 0 0 var(--L5)}
+  .lhead{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:13px;letter-spacing:.04em;
+    text-transform:uppercase;margin-bottom:9px;color:var(--lc)}
+  .layer.l1{--lc:var(--L1)} .layer.l2{--lc:var(--L2)} .layer.l3{--lc:var(--L3)}
+  .layer.l4{--lc:var(--L4)} .layer.l5{--lc:var(--L5)}
+  .row{display:grid;gap:9px;flex:1;align-items:stretch}
+  .row[data-n="3"]{grid-template-columns:repeat(3,1fr)}
+  .row[data-n="4"]{grid-template-columns:repeat(4,1fr)}
+  .row[data-n="5"]{grid-template-columns:repeat(5,1fr)}
+  .box{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 8px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center}
+  .box .ic{font-size:21px;color:var(--lc)}
+  .box h4{font-family:"Space Grotesk",sans-serif;font-size:12.5px;font-weight:600;line-height:1.1}
+  .box .m{font-size:10px;color:var(--muted);line-height:1.2}
+
+  /* ---- ANIMATED FLOW CONNECTOR between layers ---- */
+  .conn{height:22px;position:relative;display:flex;justify-content:center;align-items:center}
+  .conn .track{position:absolute;left:18%;right:18%;top:50%;height:2px;transform:translateY(-50%);
+    background:repeating-linear-gradient(90deg,var(--conn) 0 6px,transparent 6px 12px)}
+  .conn .arrow{position:absolute;right:18%;top:50%;transform:translate(50%,-50%);
+    border:5px solid transparent;border-left-color:var(--conn)}
+  /* the moving dot: animates left→right on a loop in a live browser.
+     For STILL/GIF capture, body[data-phase="k"] freezes it at fraction k/STEPS. */
+  .conn .dot{position:absolute;top:50%;width:11px;height:11px;border-radius:50%;
+    background:var(--dot);box-shadow:0 0 0 4px color-mix(in srgb,var(--dot) 25%,transparent);
+    transform:translate(-50%,-50%);left:18%;
+    animation:flow 2.4s linear infinite}
+  @keyframes flow{from{left:18%}to{left:82%}}
+  .conn.c1 .dot{--dot:var(--L1)} .conn.c2 .dot{--dot:var(--L2)}
+  .conn.c3 .dot{--dot:var(--L3)} .conn.c4 .dot{--dot:var(--L4)}
+
+  /* PHASE FREEZE for capture: pause animation and place the dot by phase.
+     Add data-phase="0".."5" on <body>; 6 evenly-spaced frames = one loop. */
+  body[data-phase] .conn .dot{animation:none}
+  body[data-phase="0"] .conn .dot{left:18%}
+  body[data-phase="1"] .conn .dot{left:30.8%}
+  body[data-phase="2"] .conn .dot{left:43.6%}
+  body[data-phase="3"] .conn .dot{left:56.4%}
+  body[data-phase="4"] .conn .dot{left:69.2%}
+  body[data-phase="5"] .conn .dot{left:82%}
+
+  /* right: numbered takeaways rail */
+  .takeaways{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    display:flex;flex-direction:column;overflow:hidden}
+  .takeaways .th{background:var(--accent);color:#fff;font-family:"Space Grotesk",sans-serif;
+    font-weight:700;font-size:16px;text-align:center;padding:10px 0;letter-spacing:.02em}
+  .takeaways .tlist{flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:10px 12px;gap:8px}
+  .take{display:grid;grid-template-columns:26px 1fr;gap:9px;align-items:start}
+  .take .tnum{width:26px;height:26px;border-radius:7px;background:var(--tc);color:#fff;
+    font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:13px;display:flex;
+    align-items:center;justify-content:center}
+  .take h5{font-family:"Space Grotesk",sans-serif;font-size:12.5px;font-weight:700;line-height:1.12;color:var(--tc)}
+  .take p{font-size:10.5px;color:var(--muted);line-height:1.25;margin-top:2px}
+  .take:nth-child(1){--tc:var(--L1)} .take:nth-child(2){--tc:var(--L2)}
+  .take:nth-child(3){--tc:var(--L3)} .take:nth-child(4){--tc:var(--L4)}
+  .take:nth-child(5){--tc:var(--L1)} .take:nth-child(6){--tc:var(--L2)}
+  .take:nth-child(7){--tc:var(--L3)} .take:nth-child(8){--tc:var(--L4)}
+
+  /* footer */
+  .foot{display:flex;justify-content:center;gap:26px;align-items:center;color:var(--muted);
+    font-size:13px;margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+  .foot span{display:flex;align-items:center;gap:6px}
+  .foot .ic{font-size:16px;color:var(--ink)}
+</style>
+</head>
+
+<!-- data-phase: REMOVE the attr for live animation in a browser. For still/GIF
+     capture set data-phase="0".."5" to freeze the dots at each step. -->
+<body>
+  <div class="wrap">
+    <div class="title">Layered <span class="hl">System</span> Architecture</div>
+    <div class="subpill">One sharp positioning line.</div>
+
+    <div class="body">
+
+      <!-- LEFT: numbered tier rail -->
+      <div class="tiers">
+        <div class="tier-lab t1"><span class="tn">1. Layer One</span><span class="tt">One line on what this layer does.</span></div>
+        <div class="tier-lab t2"><span class="tn">2. Layer Two</span><span class="tt">One line on what this layer does.</span></div>
+        <div class="tier-lab t3"><span class="tn">3. Layer Three</span><span class="tt">One line on what this layer does.</span></div>
+        <div class="tier-lab t4"><span class="tn">4. Layer Four</span><span class="tt">One line on what this layer does.</span></div>
+        <div class="tier-lab t5"><span class="tn">5. Layer Five</span><span class="tt">One line on what this layer does.</span></div>
+      </div>
+
+      <!-- CENTER: stack of layer bands joined by animated flow connectors -->
+      <div class="stack">
+        <div class="layer l1"><div class="lhead">Layer One</div>
+          <div class="row" data-n="5">
+            <div class="box"><span class="ic iconify" data-icon="lucide:share-2"></span><h4>Node A</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:layout-grid"></span><h4>Node B</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:wrench"></span><h4>Node C</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:clock"></span><h4>Node D</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:globe"></span><h4>Node E</h4></div>
+          </div></div>
+        <div class="conn c1"><div class="track"></div><div class="dot"></div><div class="arrow"></div></div>
+
+        <div class="layer l2"><div class="lhead">Layer Two</div>
+          <div class="row" data-n="4">
+            <div class="box"><span class="ic iconify" data-icon="lucide:cpu"></span><h4>Node A</h4><div class="m">one line</div></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:database"></span><h4>Node B</h4><div class="m">one line</div></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:search"></span><h4>Node C</h4><div class="m">one line</div></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:message-square"></span><h4>Node D</h4><div class="m">one line</div></div>
+          </div></div>
+        <div class="conn c2"><div class="track"></div><div class="dot"></div><div class="arrow"></div></div>
+
+        <div class="layer l3"><div class="lhead">Layer Three</div>
+          <div class="row" data-n="4">
+            <div class="box"><span class="ic iconify" data-icon="lucide:server"></span><h4>Node A</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:globe"></span><h4>Node B</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:database"></span><h4>Node C</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:brain"></span><h4>Node D</h4></div>
+          </div></div>
+        <div class="conn c3"><div class="track"></div><div class="dot"></div><div class="arrow"></div></div>
+
+        <div class="layer l4"><div class="lhead">Layer Four</div>
+          <div class="row" data-n="4">
+            <div class="box"><span class="ic iconify" data-icon="lucide:user-check"></span><h4>Node A</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:refresh-cw"></span><h4>Node B</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:shield"></span><h4>Node C</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:arrow-up"></span><h4>Node D</h4></div>
+          </div></div>
+        <div class="conn c4"><div class="track"></div><div class="dot"></div><div class="arrow"></div></div>
+
+        <div class="layer l5"><div class="lhead">Layer Five</div>
+          <div class="row" data-n="4">
+            <div class="box"><span class="ic iconify" data-icon="lucide:activity"></span><h4>Node A</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:line-chart"></span><h4>Node B</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:dollar-sign"></span><h4>Node C</h4></div>
+            <div class="box"><span class="ic iconify" data-icon="lucide:file-check"></span><h4>Node D</h4></div>
+          </div></div>
+      </div>
+
+      <!-- RIGHT: numbered takeaways rail -->
+      <div class="takeaways">
+        <div class="th">8 KEY TAKEAWAYS</div>
+        <div class="tlist">
+          <div class="take"><span class="tnum">1</span><div><h5>Takeaway one</h5><p>One short supporting line.</p></div></div>
+          <div class="take"><span class="tnum">2</span><div><h5>Takeaway two</h5><p>One short supporting line.</p></div></div>
+          <div class="take"><span class="tnum">3</span><div><h5>Takeaway three</h5><p>One short supporting line.</p></div></div>
+          <div class="take"><span class="tnum">4</span><div><h5>Takeaway four</h5><p>One short supporting line.</p></div></div>
+          <div class="take"><span class="tnum">5</span><div><h5>Takeaway five</h5><p>One short supporting line.</p></div></div>
+          <div class="take"><span class="tnum">6</span><div><h5>Takeaway six</h5><p>One short supporting line.</p></div></div>
+          <div class="take"><span class="tnum">7</span><div><h5>Takeaway seven</h5><p>One short supporting line.</p></div></div>
+          <div class="take"><span class="tnum">8</span><div><h5>Takeaway eight</h5><p>One short supporting line.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER: placeholder handles — replace with the END-USER's (or delete)
+         before delivering. See Layout rule #3 in the skill. -->
+    <div class="foot">
+      <span><span class="ic iconify" data-icon="lucide:instagram"></span>@yourhandle</span>
+      <span><span class="ic iconify" data-icon="lucide:linkedin"></span>your-name</span>
+      <span><span class="ic iconify" data-icon="lucide:twitter"></span>@yourhandle</span>
+    </div>
+  </div>
+</body>
+</html>

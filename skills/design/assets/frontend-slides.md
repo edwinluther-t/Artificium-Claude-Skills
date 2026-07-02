@@ -34,6 +34,14 @@ Avoid generic AI-generated aesthetics:
 
 Interpret creatively and make unexpected choices that feel genuinely designed for the context. Vary between light and dark themes, different fonts, different aesthetics. You still tend to converge on common choices (Space Grotesk, for example) across generations. Avoid this: it is critical that you think outside the box!
 
+Craft specifics that keep a distinctive deck from breaking:
+
+- **Icons:** pull from an Iconify CDN set whose stroke matches the deck's mood (not always flat lucide — a hand-drawn deck wants `streamline-freehand`), and VERIFY each name resolves before trusting it (`curl -s "https://api.iconify.design/<set>.json?icons=a,b"` → `not_found: []`); a wrong name renders as a silent blank gap.
+- **Charts inline, not as images:** build a pie as a `conic-gradient`, a bar/spark row as flex'd divs, a gauge as a conic ring — colored from the theme's CSS vars so the data-viz belongs to the deck and stays crisp at any projector size.
+- **Compose slides from borrowed blocks (hybrid):** a slide can lift a self-contained block from another layout — a giant stat numeral, a two-column comparison, a stepped progression, a quote band. Keep the deck's ONE theme; restyle the block to its vars rather than introducing a second palette on one slide.
+- **Honest scope on art:** no image-generation model is available here, so photoreal/3D/AI illustrations can't be produced — which is exactly why atmospheric CSS (gradients, geometry, noise) is the move. When a real photo/illustration is genuinely needed, leave an image slot for the user's asset and hand over a prompt-recipe; never claim to have generated art.
+- **Verify by looking:** when slides are exported to images (headless Chrome), build the `file://` URI with Python `pathlib.as_uri()` — a raw `file://$(pwd)` can silently capture an error page (tell: a tiny file) — render at 2×, and open the export to check it before delivering.
+
 ## Viewport Fitting Rules
 
 These invariants apply to EVERY slide in EVERY presentation:
