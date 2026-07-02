@@ -1,17 +1,17 @@
 # The Artificium
 
-![Skills](https://img.shields.io/badge/skills-229-f5a623)
+![Skills](https://img.shields.io/badge/skills-230-f5a623)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-skills-7c3aed)
 [![Stars](https://img.shields.io/github/stars/edwinluther-t/Artificium-Claude-Skills?style=social)](https://github.com/edwinluther-t/Artificium-Claude-Skills/stargazers)
 
-**229 production-ready Claude Code skills. One install. Zero cruft.**
+**230 production-ready Claude Code skills. One install. Zero cruft.**
 
 A curated arsenal covering engineering, design, agents, research, content, and ops — every skill cleaned, named, and ready to trigger as `/skill-name` the moment it lands.
 
 | | |
 |---|---|
-| 🧩 **229 skills** | across 6 domains |
+| 🧩 **230 skills** | across 7 domains |
 | 🧹 **Two-field frontmatter** | `name` + `description`, nothing else |
 | ⚡ **Instant triggering** | `/skill-name`, no restart |
 | 📦 **Drop-in install** | one `cp`, global or per-project |
@@ -46,7 +46,7 @@ git clone https://github.com/edwinluther-t/Artificium-Claude-Skills.git
 Copy-Item -Recurse Artificium-Claude-Skills\skills-dist\* "$env:USERPROFILE\.claude\skills\"
 ```
 
-Open Claude Code and type `/` — all 229 skills are live. That's it.
+Open Claude Code and type `/` — all 230 skills are live. That's it.
 
 ---
 
@@ -338,6 +338,7 @@ python build-dist.py
 | `/investor-materials` | Create and update pitch decks, one-pagers, investor memos, accelerator applications, and financial models. |
 | `/investor-outreach` | Draft cold emails, warm intro blurbs, follow-ups, and investor communications for fundraising. |
 | `/lead-research-assistant` | Identify high-quality leads by analyzing your business, searching for target companies, and providing actionable contact strategies. |
+| `/linkedin-post` | Generate LinkedIn infographic graphics plus hook-first post copy — picks an archetype from a 24-template library, applies a palette and font pairing, and renders a LinkedIn-sized PNG via headless Chrome. |
 | `/marketing-campaign` | End-to-end marketing campaign planning — audience research, positioning, landing page copy, email sequences, social posts, ad copy, content calendars. |
 | `/seo` | Audit, plan, and implement SEO improvements — technical SEO, on-page optimization, structured data, Core Web Vitals, and content strategy. |
 
