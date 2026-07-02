@@ -9,12 +9,24 @@
 
 A curated arsenal covering engineering, design, agents, research, content, and ops — every skill cleaned, named, and ready to trigger as `/skill-name` the moment it lands.
 
-| | |
-|---|---|
-| 🧩 **230 skills** | across 7 domains |
-| 🧹 **Two-field frontmatter** | `name` + `description`, nothing else |
-| ⚡ **Instant triggering** | `/skill-name`, no restart |
-| 📦 **Drop-in install** | one `cp`, global or per-project |
+> 🧹 **Clean** — two-field frontmatter, no vendor lock-in or author cruft &nbsp;·&nbsp; ⚡ **Instant** — triggers as `/skill-name`, no restart &nbsp;·&nbsp; 📦 **Drop-in** — one `cp`, global or per-project
+
+---
+
+## What's inside
+
+Seven groups, 230 skills. Scan the shape of the whole collection, then jump to any group.
+
+| Group | Skills | What you get |
+|---|:--:|---|
+| ⚙️ **[Engineering](#engineering)** | 89 | Architecture, backend, frontend, data/ML, infra, mobile, security, testing |
+| 🎨 **[Design](#design)** | 41 | Visual design, design systems, tokens, components, motion, assets |
+| 🤖 **[Agents](#agents)** | 39 | Harnesses, orchestration, evals, prompting, context engineering |
+| 🛠️ **[Ops](#ops)** | 26 | Git, planning, docs, comms, spreadsheets, PDFs, resumes |
+| ✍️ **[Content & Brand](#content--brand)** | 14 | Writing, brand, marketing, SEO, LinkedIn, investor materials |
+| 🧩 **[Skills Meta](#skills-meta)** | 13 | Build, route, audit, and install skills themselves |
+| 🔬 **[Research](#research)** | 8 | Deep research, competitive analysis, market & literature review |
+| | **230** | across 7 groups · two-field frontmatter · MIT |
 
 ## Why this exists
 
@@ -96,6 +108,8 @@ python build-dist.py
 
 ### Agents
 
+<sub>**39 skills** · harnesses, orchestration, evals, prompting, and context engineering for building and running AI agents. [↑ back to groups](#whats-inside)</sub>
+
 | Skill | What it does |
 |---|---|
 | `/agent-architecture-audit` | Full-stack diagnostic for agent and LLM applications. Audits the 12-layer agent stack for wrapper regression, memory pollution, tool discipline failures, hidden repair loops, and rendering corruption. |
@@ -120,6 +134,12 @@ python build-dist.py
 | `/gateguard` | Fact-forcing gate that blocks destructive actions and demands concrete investigation before allowing them. Measurably improves output quality. |
 | `/iterative-retrieval` | Pattern for progressively refining context retrieval — use when spawning subagents that cannot predict upfront which files they need. |
 | `/knowledge-ops` | Knowledge base management, ingestion, sync, and retrieval across multiple storage layers (local files, MCP memory, vector stores, Git repos). |
+| `/orch-add-feature` | Orchestrate building a brand-new feature end to end — research, plan, TDD implementation, review, and gated commit — delegating each phase to the matching agent. |
+| `/orch-build-mvp` | Orchestrate bootstrapping a working MVP from a design or spec — ingest the doc, plan thin vertical slices, scaffold the first end-to-end slice, then TDD, review, and gated commit. |
+| `/orch-change-feature` | Orchestrate altering an existing feature to new behavior — update tests to the new spec, change the implementation to match, review, and gated commit. |
+| `/orch-fix-defect` | Orchestrate fixing a bug — reproduce it as a failing regression test, fix to green, review, and gated commit — delegating each phase to the matching agent. |
+| `/orch-pipeline` | Shared orchestration engine for the orch-* family — the gated Research-Plan-TDD-Review-Commit pipeline, size classifier, agent map, and human gates. |
+| `/orch-refine-code` | Orchestrate a behavior-preserving refactor — confirm tests green, restructure without changing behavior, keep tests green, review, and gated commit. |
 | `/parallel-execution-optimizer` | Use when you want a task done much faster through parallel work, concurrent agents, batched tool calls, or isolated worktrees. |
 | `/plan-orchestrate` | Read a plan document, decompose it into steps, design a per-step agent chain, and emit ready-to-paste orchestration prompts. |
 | `/prompt-architecture` | Use when designing or structuring a system prompt from scratch — for an agent, a pipeline step, a tool wrapper, or a Claude API call. |
@@ -135,6 +155,8 @@ python build-dist.py
 ---
 
 ### Engineering
+
+<sub>**89 skills** · the largest group — architecture, backend, frontend, data/ML, infra, mobile, security, and testing across every major stack. [↑ back to groups](#whats-inside)</sub>
 
 #### Architecture & Core
 
@@ -154,6 +176,8 @@ python build-dist.py
 | `/documentation-lookup` | Fetches up-to-date library and framework docs instead of relying on training data. |
 | `/doubt-driven-development` | Adversarial review of every non-trivial decision before it stands. Use when correctness matters more than speed. |
 | `/error-handling` | Patterns for robust error handling across TypeScript, Python, and Go — typed errors, error boundaries, retries, circuit breakers. |
+| `/error-handling-core` | Core error-handling patterns across TypeScript, Python, and Go — typed errors, error boundaries, retries, circuit breakers, and user-facing error messages. |
+| `/plankton-code-quality` | Write-time code-quality enforcement using Plankton — auto-formatting, linting, and Claude-powered fixes on every file edit via hooks. |
 | `/incremental-implementation` | Delivers changes incrementally for any feature touching more than one file. |
 | `/intent-driven-development` | Turn ambiguous product and engineering changes into scoped, verifiable acceptance criteria before implementation. |
 | `/opensource-pipeline` | Safely open-source any project — fork, sanitize, and package. Strips secrets before publishing. |
@@ -257,6 +281,8 @@ python build-dist.py
 
 ### Design
 
+<sub>**41 skills** · visual design, design systems, tokens, component specs, motion, and asset generation — from taste rules to production code. [↑ back to groups](#whats-inside)</sub>
+
 #### Visual & Aesthetic
 
 | Skill | What it does |
@@ -277,6 +303,7 @@ python build-dist.py
 |---|---|
 | `/brandkit` | Generate a complete, accessible brand design system from a brief — primitive → semantic → component DTCG tokens, light + dark, theme.css — verified for WCAG. |
 | `/design-system` | Token architecture, component specifications, and slide generation. Three-layer tokens, CSS variables, spacing/typography scales. |
+| `/design-system-audit` | Generate or audit design systems, check visual consistency, and review PRs that touch styling. |
 | `/design-tokens` | Generate, extend, or audit design tokens in DTCG format with the 3-tier architecture. Colors, typography, spacing, shadows, borders, motion, theming. |
 | `/figma-integration` | Keep Figma and code in sync — map DTCG tokens to Figma Variables, sync in either direction, verify component parity. |
 | `/governance` | Govern design system evolution — SemVer for tokens/components, contribution workflow, deprecation policy, change communication. |
@@ -303,6 +330,7 @@ python build-dist.py
 |---|---|
 | `/banner-design` | Design banners for social media, ads, website heroes, creative assets, and print. Multiple art direction options per request. |
 | `/frontend-slides` | Create zero-dependency, animation-rich HTML presentations from scratch or by converting PowerPoint files. |
+| `/frontend-slides-pptx` | Build animation-rich HTML presentations from scratch or by converting PPT/PPTX — helps non-designers discover an aesthetic through visual exploration. |
 | `/motion-advanced` | Advanced motion patterns for React/Next.js — drag & drop, gestures, text animations, SVG path drawing, custom hooks. |
 | `/motion-foundations` | Motion tokens, spring presets, performance rules, device adaptation, and accessibility enforcement for React/Next.js. |
 | `/motion-patterns` | Production-ready animation patterns — button, modal, toast, stagger, page transitions, exit animations, scroll, and layout. |
@@ -325,6 +353,8 @@ python build-dist.py
 
 ### Content & Brand
 
+<sub>**14 skills** · writing, brand voice, marketing campaigns, SEO, LinkedIn graphics, and investor materials. [↑ back to groups](#whats-inside)</sub>
+
 | Skill | What it does |
 |---|---|
 | `/article-writing` | Write articles, guides, blog posts, tutorials, and long-form content in a distinctive voice derived from supplied examples or brand guidance. |
@@ -346,6 +376,8 @@ python build-dist.py
 
 ### Research
 
+<sub>**8 skills** · deep research, competitive analysis, and market & literature review — all with source attribution. [↑ back to groups](#whats-inside)</sub>
+
 | Skill | What it does |
 |---|---|
 | `/competitive-platform-analysis` | Scope a competitive landscape — identify, categorize, and score-filter a competitor set before any benchmarking begins. First step in the three-skill competitive pipeline. |
@@ -360,6 +392,8 @@ python build-dist.py
 ---
 
 ### Ops
+
+<sub>**26 skills** · git workflows, planning, comms, and document work — Word, PowerPoint, Excel, PDF, and resumes. [↑ back to groups](#whats-inside)</sub>
 
 #### Git & Project
 
@@ -401,6 +435,8 @@ python build-dist.py
 ---
 
 ### Skills Meta
+
+<sub>**13 skills** · the tooling that builds the collection itself — create, route, audit, comply, and install skills. [↑ back to groups](#whats-inside)</sub>
 
 | Skill | What it does |
 |---|---|
